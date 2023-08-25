@@ -138,4 +138,7 @@ _NCrunch*
 *.wsuo
 *.sqlite
 /.vs
+*.1
+/SurfBoardWeb/.vs/SurfBoardWeb/DesignTimeBuild/.dtbcache.v2
+/SurfBoardWeb/.vs/SurfBoardWeb/v17/.futdcache.v2
 /SurfBoardWeb/.vs/SurfBoardWeb/config/applicationhost.config
