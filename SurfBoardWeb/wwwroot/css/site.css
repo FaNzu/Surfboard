@@ -29,3 +29,12 @@ body {
     .hoverImage:hover {
         transform: scale(3.5);
     }
+/*Custom CSS da man ikke kan finde de normale værdier*/
+.footerNew{
+    height:50px;
+    width:100%;
+    border-top:1px solid #808080;
+}
+.containerNew {
+    margin-top: 5px;
+}
