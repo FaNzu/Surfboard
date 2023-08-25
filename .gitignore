@@ -134,3 +134,7 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+*.lock
+*.wsuo
+*.sqlite
+/.vs/VSWorkspaceState.json
