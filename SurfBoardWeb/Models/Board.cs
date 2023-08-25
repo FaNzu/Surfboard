@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardWeb.Models
 {
@@ -11,18 +12,22 @@ namespace SurfBoardWeb.Models
         [Required]
         public string Name { get; set; }
 
+        [DisplayName("Length (feet)")]
         [Range(100, 600)]
         [Required]
         public double Length { get; set; }
 
+        [DisplayName("Width (inchs)")]
         [Range(100, 600)]
         [Required]
         public double Width { get; set; }
 
+        [DisplayName("Thickness (Inches)")]
         [Range(100, 600)]
         [Required]
         public double Thickness { get; set; }
 
+        [DisplayName("Volume (L)")]
         [Range(100, 600)]
         [Required]
         public double Volume { get; set; }
