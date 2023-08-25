@@ -70,7 +70,7 @@
                 @Html.DisplayFor(modelItem => item.Equipment)
             </td>
             <td>
-                <img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40">
+                <img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

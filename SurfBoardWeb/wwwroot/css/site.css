@@ -20,3 +20,12 @@ body {
     content:" *";
     color: red;
 }
+.hoverImage {
+    transition: transform .2s;
+    Height: 50px;
+    border-radius: 10px;
+    border: 0.5px solid black;
+}
+    .hoverImage:hover {
+        transform: scale(3.5);
+    }
