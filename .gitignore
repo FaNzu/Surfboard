@@ -137,4 +137,4 @@ _NCrunch*
 *.lock
 *.wsuo
 *.sqlite
-/.vs/VSWorkspaceState.json
+/.vs
