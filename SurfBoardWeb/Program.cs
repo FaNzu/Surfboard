@@ -36,7 +36,7 @@ namespace SurfBoardWeb
 				pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-            app.UseRequestLocalization("en-FR");
+            app.UseRequestLocalization("da-FR");
 
             app.Run();
 		}
