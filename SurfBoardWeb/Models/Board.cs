@@ -13,22 +13,22 @@ namespace SurfBoardWeb.Models
         public string Name { get; set; }
 
         [DisplayName("Length (feet)")]
-        [Range(10, 600)]
+        [Range(0, 100)]
         [Required]
         public double Length { get; set; }
 
         [DisplayName("Width (inchs)")]
-        [Range(5, 600)]
+        [Range(0, 100)]
         [Required]
         public double Width { get; set; }
 
         [DisplayName("Thickness (Inches)")]
-        [Range(2, 600)]
+        [Range(0, 100)]
         [Required]
         public double Thickness { get; set; }
 
         [DisplayName("Volume (L)")]
-        [Range(10, 600)]
+        [Range(0, 100)]
         [Required]
         public double Volume { get; set; }
 
