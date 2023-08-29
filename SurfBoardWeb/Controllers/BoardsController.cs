@@ -21,8 +21,16 @@ namespace SurfBoardWeb.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index(string BoardType, string searchString)
+        public async Task<IActionResult> Index(string BoardType, string searchString, string sortOrder)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["LengthSortParm"] = sortOrder == "Length" ? "length_desc" : "Length";
+            ViewData["WidthSortParm"] = sortOrder == "Width" ? "width_desc" : "Width";
+            ViewData["ThicknessSortParm"] = sortOrder == "Thickness" ? "thickness_desc" : "Thickness";
+            ViewData["VolumeSortParm"] = sortOrder == "Volume" ? "volume_desc" : "Volume";
+            ViewData["TypeSortParm"] = sortOrder == "Type" ? "type_desc" : "Type";
+            ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["EquipmentSortParm"] = sortOrder == "Equipment" ? "equipment_desc" : "Equipment";
             ViewData["CurrentFilter"] = searchString;
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Board
@@ -30,7 +38,57 @@ namespace SurfBoardWeb.Controllers
                                             select m.Type;
             var boards = from m in _context.Board
                          select m;
-
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    boards = boards.OrderByDescending(m => m.Name);
+                    break;
+                case "Length":
+                    boards = boards.OrderBy(m => m.Length);
+                    break;
+                case "length_desc":
+                    boards = boards.OrderByDescending(m => m.Length);
+                    break;
+                case "Width":
+                    boards = boards.OrderBy(m => m.Width);
+                    break;
+                case "width_desc":
+                    boards = boards.OrderByDescending(m => m.Width);
+                    break;
+                case "Thickness":
+                    boards = boards.OrderBy(m => m.Thickness);
+                    break;
+                case "thickness_desc":
+                    boards = boards.OrderByDescending(m => m.Thickness);
+                    break;
+                case "Volume":
+                    boards = boards.OrderBy(m => m.Volume);
+                    break;
+                case "volume_desc":
+                    boards = boards.OrderByDescending(m => m.Volume);
+                    break;
+                case "Type":
+                    boards = boards.OrderBy(m => m.Type);
+                    break;
+                case "type_desc":
+                    boards = boards.OrderByDescending(m => m.Type);
+                    break;
+                case "Price":
+                    boards = boards.OrderBy(m => m.Price);
+                    break;
+                case "price_desc":
+                    boards = boards.OrderByDescending(m => m.Price);
+                    break;
+                case "Equipment":
+                    boards = boards.OrderBy(m => m.Equipment);
+                    break;
+                case "equipment_desc":
+                    boards = boards.OrderByDescending(m => m.Equipment);
+                    break;
+                default:
+                    boards = boards.OrderBy(m => m.Name);
+                    break;
+            }
             if (!string.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(model => model.Name!.Contains(searchString)
