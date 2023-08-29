@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SurfBoardWeb.Models.Board>
+﻿@model SurfBoardWeb.Models.BoardTypeViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,32 +9,42 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-controller="Boards" asp-action="Index" method="get">
+    <p>
+        <select asp-for="BoardType" asp-items="Model.Types">
+            <option value="">All</option>
+        </select>
+        Title: <input type="text" name="SearchString" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Boards[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Length)
+                @Html.DisplayNameFor(model => model.Boards[0].Length)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Width)
+                @Html.DisplayNameFor(model => model.Boards[0].Width)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Thickness)
+                @Html.DisplayNameFor(model => model.Boards[0].Thickness)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Volume)
+                @Html.DisplayNameFor(model => model.Boards[0].Volume)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                @Html.DisplayNameFor(model => model.Boards[0].Type)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Boards[0].Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Equipment)
+                @Html.DisplayNameFor(model => model.Boards[0].Equipment)
             </th>
             <th>
                 billede
@@ -43,7 +53,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Boards) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
