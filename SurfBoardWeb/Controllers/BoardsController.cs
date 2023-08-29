@@ -20,11 +20,32 @@ namespace SurfBoardWeb.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string BoardType, string searchString)
         {
-              return _context.Board != null ? 
-                          View(await _context.Board.ToListAsync()) :
-                          Problem("Entity set 'SurfBoardWebContext.Board'  is null.");
+            // Use LINQ to get list of genres.
+            IQueryable<string> genreQuery = from m in _context.Board
+                                            orderby m.Type
+                                            select m.Type;
+            var boards = from m in _context.Board
+                         select m;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                boards = boards.Where(s => s.Name!.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(BoardType))
+            {
+                boards = boards.Where(x => x.Type == BoardType);
+            }
+
+            var BoardTypeVM = new BoardTypeViewModel
+            {
+                Types = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Boards = await boards.ToListAsync()
+            };
+
+            return View(BoardTypeVM);
         }
 
         // GET: Boards/Details/5
