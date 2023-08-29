@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardWeb.Data;
+using Microsoft.AspNetCore.Identity;
+using SurfBoardWeb.Models;
+
 namespace SurfBoardWeb
 {
 	public class Program
@@ -10,6 +13,9 @@ namespace SurfBoardWeb
 			var builder = WebApplication.CreateBuilder(args);
 			builder.Services.AddDbContext<SurfBoardWebContext>(options =>
 			    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
+
+               builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<SurfBoardWebContext>();
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
@@ -28,13 +34,18 @@ namespace SurfBoardWeb
 			app.UseStaticFiles();
 
 			app.UseRouting();
+               app.UseAuthentication();;
 
 			app.UseAuthorization();
+
+			
 
 			app.MapControllerRoute(
 				name: "default", 
 				pattern: "{controller=Home}/{action=Index}/{id?}");
 
+			app.MapRazorPages();
+			app.UseAuthorization();
 
             app.UseRequestLocalization("da-FR");
 
