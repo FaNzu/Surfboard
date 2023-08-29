@@ -14,8 +14,9 @@
         <select asp-for="BoardType" asp-items="Model.Types">
             <option value="">All</option>
         </select>
-        Title: <input type="text" name="SearchString" />
-        <input type="submit" value="Filter" />
+        Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Søg" class="btn btn-default" /> |
+        <a asp-action="Index">Stop Søgning</a>
     </p>
 </form>
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SurfBoardWeb.Data;
 using SurfBoardWeb.Models;
 
@@ -22,6 +23,7 @@ namespace SurfBoardWeb.Controllers
         // GET: Boards
         public async Task<IActionResult> Index(string BoardType, string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
@@ -31,7 +33,11 @@ namespace SurfBoardWeb.Controllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                boards = boards.Where(s => s.Name!.Contains(searchString));
+                boards = boards.Where(model => model.Name!.Contains(searchString)
+                        || model.Equipment!.Contains(searchString));
+                        //||model.Price == double.Parse(searchString));
+
+                // tilføj mere søgefunktioner
             }
 
             if (!string.IsNullOrEmpty(BoardType))
