@@ -11,8 +11,8 @@ using SurfBoardWeb.Data;
 namespace SurfBoardWeb.Migrations
 {
     [DbContext(typeof(SurfBoardWebContext))]
-    [Migration("20230825081245_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230905082532_RowVersion")]
+    partial class RowVersion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,18 +39,26 @@ namespace SurfBoardWeb.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("PicturePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Volume")
