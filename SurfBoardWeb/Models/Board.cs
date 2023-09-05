@@ -40,8 +40,8 @@ namespace SurfBoardWeb.Models
         [Required]
         public double Price{ get; set; }
 
-
-
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public string Equipment { get; set; }
         public string PicturePath { get; set; }
