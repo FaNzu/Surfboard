@@ -35,6 +35,8 @@ namespace SurfBoardWeb.Controllers
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
             ViewData["EquipmentSortParm"] = sortOrder == "Equipment" ? "equipment_desc" : "Equipment";
             ViewData["CurrentFilter"] = searchString;
+            //ViewData["KundeId"] = string.IsNullOrEmpty(sortOrder) ? "Kunde_desc" : "";
+            //ViewData["Booked"] = string.IsNullOrEmpty(sortOrder) ? "Booked_desc" : "";
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
@@ -211,7 +213,7 @@ namespace SurfBoardWeb.Controllers
             if (await TryUpdateModelAsync<Board>(
                 BoardToUpdate,
                 "",
-                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath))
+                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath, s=> s.Lejer, s=> s.StartDate, s=> s.SlutDate))
             {
                 try
                 {

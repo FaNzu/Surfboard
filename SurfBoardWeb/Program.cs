@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SurfBoardWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardWeb.Models;
+using System;
 
 namespace SurfBoardWeb
 {
@@ -51,5 +52,6 @@ namespace SurfBoardWeb
 
             app.Run();
 		}
+		
 	}
 }

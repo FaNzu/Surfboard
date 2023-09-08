@@ -10,11 +10,13 @@ namespace SurfBoardWeb.Data
 {
     public class SurfBoardWebContext : IdentityDbContext<DefaultUser>
     {
-        public SurfBoardWebContext (DbContextOptions<SurfBoardWebContext> options)
+        public SurfBoardWebContext(DbContextOptions<SurfBoardWebContext> options)
             : base(options)
         {
         }
 
         public DbSet<SurfBoardWeb.Models.Board> Board { get; set; } = default!;
+
+
     }
 }

@@ -45,5 +45,13 @@ namespace SurfBoardWeb.Models
 
         public string Equipment { get; set; }
         public string PicturePath { get; set; }
+
+        public String? Lejer { get; set; }
+       
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? SlutDate { get; set; }
+       
+
     }
 }
