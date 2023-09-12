@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ namespace SurfBoardWeb.Controllers
     public class BoardsController : Controller
     {
         private readonly SurfBoardWebContext _context;
+        private readonly UserManager<DefaultUser> _userManager;
 
         public BoardsController(SurfBoardWebContext context)
         {
@@ -339,7 +342,7 @@ namespace SurfBoardWeb.Controllers
 
         [HttpPost, ActionName("Rent")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,BoardType,Equipments,StartDate, EndDate")] Board board)
+        public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,Type,Equipments,StartDate, EndDate")] Board board)
         {
             if (id == null)
             {
@@ -350,11 +353,15 @@ namespace SurfBoardWeb.Controllers
             {
                 try
                 {
-                    var existingBoard = await _context.Board.FirstOrDefaultAsync(model => model.Id == id);
+                    var existingBoard = await _context.Board
+                        .FirstOrDefaultAsync(model => model.Id == id);
                     
-                    if (existingBoard != null)
+                    if (existingBoard == null)
                         return NotFound();
 
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                    existingBoard.DefaultUserId = userId;
                     existingBoard.StartDate = board.StartDate;
                     existingBoard.EndDate = board.EndDate;
 
