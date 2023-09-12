@@ -57,8 +57,5 @@ namespace SurfBoardWeb.Models
 
         [ForeignKey("DefaultUserId")]
         public string? DefaultUserId { get; set; }
-
-        [Display(Name = "Rented By")]
-        public DefaultUser? RentedBy { get; set; }
     }
 }

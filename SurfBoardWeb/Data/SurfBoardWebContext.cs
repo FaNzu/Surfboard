@@ -16,15 +16,5 @@ namespace SurfBoardWeb.Data
         }
 
         public DbSet<SurfBoardWeb.Models.Board> Board { get; set; } = default!;
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Board>()
-                .HasOne(s => s.RentedBy)
-                .WithMany()
-                .HasForeignKey(s => s.DefaultUserId)
-                .OnDelete(DeleteBehavior.SetNull);
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }
