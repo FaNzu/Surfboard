@@ -167,6 +167,12 @@ namespace SurfBoardWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("DefaultUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Equipment")
                         .HasColumnType("nvarchar(max)");
 
@@ -184,6 +190,14 @@ namespace SurfBoardWeb.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
 
@@ -198,6 +212,8 @@ namespace SurfBoardWeb.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DefaultUserId");
 
                     b.ToTable("Board");
                 });
@@ -316,6 +332,15 @@ namespace SurfBoardWeb.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SurfBoardWeb.Models.Board", b =>
+                {
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", "RentedBy")
+                        .WithMany()
+                        .HasForeignKey("DefaultUserId");
+
+                    b.Navigation("RentedBy");
                 });
 #pragma warning restore 612, 618
         }

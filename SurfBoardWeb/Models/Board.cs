@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SurfBoardWeb.Models
 {
@@ -45,5 +46,19 @@ namespace SurfBoardWeb.Models
 
         public string Equipment { get; set; }
         public string PicturePath { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? StartDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime? EndDate { get; set; }
+
+        [ForeignKey("DefaultUserId")]
+        public string? DefaultUserId { get; set; }
+
+        [Display(Name = "Rented By")]
+        public DefaultUser? RentedBy { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using SurfBoardWeb.Data;
 namespace SurfBoardWeb.Migrations
 {
     [DbContext(typeof(SurfBoardWebContext))]
-    [Migration("20230908073944_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230912071610_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,12 @@ namespace SurfBoardWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("DefaultUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Equipment")
                         .HasColumnType("nvarchar(max)");
 
@@ -192,6 +198,9 @@ namespace SurfBoardWeb.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
 
@@ -207,10 +216,12 @@ namespace SurfBoardWeb.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DefaultUserId");
+
                     b.ToTable("Board");
                 });
 
-            modelBuilder.Entity("SurfBoardWeb.Models.SurfUser", b =>
+            modelBuilder.Entity("SurfBoardWeb.Models.DefaultUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -286,7 +297,7 @@ namespace SurfBoardWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SurfBoardWeb.Models.SurfUser", null)
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -295,7 +306,7 @@ namespace SurfBoardWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SurfBoardWeb.Models.SurfUser", null)
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -310,7 +321,7 @@ namespace SurfBoardWeb.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SurfBoardWeb.Models.SurfUser", null)
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -319,11 +330,20 @@ namespace SurfBoardWeb.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SurfBoardWeb.Models.SurfUser", null)
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SurfBoardWeb.Models.Board", b =>
+                {
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", "RentedBy")
+                        .WithMany()
+                        .HasForeignKey("DefaultUserId");
+
+                    b.Navigation("RentedBy");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,52 +4,81 @@ using SurfBoardWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardWeb.Models;
 
-namespace SurfBoardWeb
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<SurfBoardWebContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
+
+builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<SurfBoardWebContext>();
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-	public class Program
-	{
-		public static void Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
-			builder.Services.AddDbContext<SurfBoardWebContext>(options =>
-			    options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
+	app.UseExceptionHandler("/Home/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
+}
+using (var scope = app.Services.CreateScope())
+{
+    var roleM = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "User" };
 
-               builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<SurfBoardWebContext>();
+    foreach (var role in roles)
+    {
+        if (!await roleM.RoleExistsAsync(role))
+        {
+            await roleM.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
 
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+using (var scope = app.Services.CreateScope())
+{
+    var userM = scope.ServiceProvider.GetRequiredService<UserManager<DefaultUser>>();
 
-			var app = builder.Build();
+    string email = "admin@admin.com";
+    string password = "Admin4$";
+    if (await userM.FindByEmailAsync(email) == null)
+    {
+        var user = new DefaultUser
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true
+        };
 
-			// Configure the HTTP request pipeline.
-			if (!app.Environment.IsDevelopment())
-			{
-				app.UseExceptionHandler("/Home/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-				app.UseHsts();
-			}
+        var result = await userM.CreateAsync(user, password);
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
+        if (result.Succeeded)
+        {
+            await userM.AddToRoleAsync(user, "Admin");
+        }
+    }
+}
 
-			app.UseRouting();
-               app.UseAuthentication();;
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-			app.UseAuthorization();
+app.UseRouting();
+    app.UseAuthentication();;
+
+app.UseAuthorization();
 
 			
 
-			app.MapControllerRoute(
-				name: "default", 
-				pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+	name: "default", 
+	pattern: "{controller=Home}/{action=Index}/{id?}");
 
-			app.MapRazorPages();
-			app.UseAuthorization();
+app.MapRazorPages();
+app.UseAuthorization();
 
-            app.UseRequestLocalization("da-FR");
+app.UseRequestLocalization("da-FR");
 
-            app.Run();
-		}
-	}
-}
+app.Run();

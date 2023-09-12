@@ -281,37 +281,7 @@ namespace SurfBoardWeb.Controllers
             }
             return View(BoardToUpdate);
         }
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,PicturePath")] Board board, byte[] rowVersion)
-        //{
-        //    if (id != board.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(board);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!BoardExists(board.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(board);
-        //}
+        
 
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -348,6 +318,65 @@ namespace SurfBoardWeb.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Rent(int id)
+        {
+            if (_context.Board == null)
+            {
+                return NotFound();
+            }
+
+            var board = await _context.Board
+                .FirstOrDefaultAsync(model => model.Id == id);
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            return View(board);
+        }
+
+        [HttpPost, ActionName("Rent")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,BoardType,Equipments,StartDate, EndDate")] Board board)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingBoard = await _context.Board.FirstOrDefaultAsync(model => model.Id == id);
+                    
+                    if (existingBoard != null)
+                        return NotFound();
+
+                    existingBoard.StartDate = board.StartDate;
+                    existingBoard.EndDate = board.EndDate;
+
+                    _context.Attach(existingBoard).State = EntityState.Modified;
+
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BoardExists(board.Id))
+                        return NotFound();
+                    else
+                        throw;
+                }
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
+            }
+            return View(board);
         }
 
         private bool BoardExists(int id)

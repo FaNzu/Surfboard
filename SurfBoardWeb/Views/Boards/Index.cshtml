@@ -1,14 +1,18 @@
 ﻿@model PaginatedList<SurfBoardWeb.Models.Board>    
 @*@model SurfBoardWeb.Models.BoardTypeViewModel*@
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p> 
+}
 <form asp-controller="Boards" asp-action="Index" method="get">
     <p>
 @*        <select asp-for="BoardType" asp-items="Model.Types">
@@ -83,11 +87,20 @@
             <td>
                     <img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
             </td>
-            <td>
+            @if (User.IsInRole("Admin"))
+            {
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                </td>
+            }
+            @if (User.IsInRole("User"))
+            {
+                <td>
+                    <a asp-action="Rent" asp-route-id="@item.Id">Udlej</a>
+                </td>
+            }
         </tr>
 }
     </tbody>
