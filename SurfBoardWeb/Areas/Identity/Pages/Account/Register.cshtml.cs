@@ -31,13 +31,16 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<DefaultUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
 
         public RegisterModel(
             UserManager<DefaultUser> userManager,
             IUserStore<DefaultUser> userStore,
             SignInManager<DefaultUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +48,7 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -123,6 +127,25 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    var roleName = "User";
+                    var role = await _roleManager.FindByNameAsync(roleName);
+                    if (role != null)
+                    {
+                        var addToRollR = await _userManager.AddToRoleAsync(user, roleName);
+
+                        if (addToRollR.Succeeded)
+                        {
+                            _logger.LogInformation($"User added to the '{roleName}' role.");
+                        }
+                        else
+                        {
+                            foreach (var error in addToRollR.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return Page();
+                        }
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
