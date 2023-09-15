@@ -16,5 +16,6 @@ namespace SurfBoardWeb.Data
         }
 
         public DbSet<SurfBoardWeb.Models.Board> Board { get; set; } = default!;
+        public DbSet<SurfBoardWeb.Models.Bookings> Bookings { get; set; }
     }
 }

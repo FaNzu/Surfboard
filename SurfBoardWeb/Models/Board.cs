@@ -47,15 +47,7 @@ namespace SurfBoardWeb.Models
         public string Equipment { get; set; }
         public string PicturePath { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? StartDate { get; set; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? EndDate { get; set; }
-
-        [ForeignKey("DefaultUserId")]
-        public string? DefaultUserId { get; set; }
+        public bool IsBooked { get; set; }
+        public ICollection<Bookings> Bookings { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace SurfBoardWeb.Controllers
             ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
             ViewData["EquipmentSortParm"] = sortOrder == "Equipment" ? "equipment_desc" : "Equipment";
             ViewData["CurrentFilter"] = searchString;
+
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
@@ -125,6 +126,9 @@ namespace SurfBoardWeb.Controllers
             };
 
             int pageSize = 5;
+
+
+
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
 
             //return View(BoardTypeVM);
@@ -323,68 +327,68 @@ namespace SurfBoardWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Rent(int id)
-        {
-            if (_context.Board == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Rent(int id)
+        //{
+        //    if (_context.Board == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var board = await _context.Board
-                .FirstOrDefaultAsync(model => model.Id == id);
-            if (board == null)
-            {
-                return NotFound();
-            }
+        //    var board = await _context.Board
+        //        .FirstOrDefaultAsync(model => model.Id == id);
+        //    if (board == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(board);
-        }
+        //    return View(board);
+        //}
 
-        [HttpPost, ActionName("Rent")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,Type,Equipments,StartDate, EndDate")] Board board)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //[HttpPost, ActionName("Rent")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,Type,Equipments,StartDate, EndDate")] Board board)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var existingBoard = await _context.Board
-                        .FirstOrDefaultAsync(model => model.Id == id);
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var existingBoard = await _context.Board
+        //                .FirstOrDefaultAsync(model => model.Id == id);
                     
-                    if (existingBoard == null)
-                        return NotFound();
+        //            if (existingBoard == null)
+        //                return NotFound();
 
-                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                    existingBoard.DefaultUserId = userId;
-                    existingBoard.StartDate = board.StartDate;
-                    existingBoard.EndDate = board.EndDate;
+        //            existingBoard.DefaultUserId = userId;
+        //            existingBoard.StartDate = board.StartDate;
+        //            existingBoard.EndDate = board.EndDate;
 
-                    _context.Attach(existingBoard).State = EntityState.Modified;
+        //            _context.Attach(existingBoard).State = EntityState.Modified;
 
-                    await _context.SaveChangesAsync();
+        //            await _context.SaveChangesAsync();
 
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BoardExists(board.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-            }
-            else
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
-            }
-            return View(board);
-        }
+        //            return RedirectToAction(nameof(Index));
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!BoardExists(board.Id))
+        //                return NotFound();
+        //            else
+        //                throw;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
+        //    }
+        //    return View(board);
+        //}
 
         private bool BoardExists(int id)
         {
