@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +13,19 @@ namespace SurfBoardWeb.Controllers
 {
     public class BookingsController : Controller
     {
-        private readonly SurfBoardWebContext _context;
+        private readonly SurfBoardWebContext _context;  
+		private readonly UserManager<IdentityUser> _userManager;
 
-        public BookingsController(SurfBoardWebContext context)
-        {
-            _context = context;
-        }
+		public BookingsController(SurfBoardWebContext context, UserManager<IdentityUser> userManager)
+		{
+			_context = context;
+			_userManager = userManager;
+		}
 
-        // GET: Bookings
-        public async Task<IActionResult> Index()
+		// GET: Bookings
+		public async Task<IActionResult> Index()
         {
-            var surfBoardWebContext = _context.Bookings.Include(b => b.User);
+            var surfBoardWebContext = _context.Bookings.Include(b => b.SurfboardId).Include(b => b.User);
             return View(await surfBoardWebContext.ToListAsync());
         }
 
@@ -35,6 +38,7 @@ namespace SurfBoardWeb.Controllers
             }
 
             var bookings = await _context.Bookings
+                .Include(b => b.SurfboardId)
                 .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookings == null)
@@ -49,28 +53,47 @@ namespace SurfBoardWeb.Controllers
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["BoardId"] = new SelectList(_context.Board, "Id", "Id");
             return View();
         }
 
         // POST: Bookings/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StartDate,EndDate,UserId,UserName,SurfboardId")] Bookings bookings)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(bookings);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
-            return View(bookings);
-        }
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking, int id)
+		{
+			if (!ModelState.IsValid)
+			{
+				_context.Add(booking);
+				booking.SurfboardId = id;
+				booking.UserName = User.Identity.Name;
 
-        // GET: Bookings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+				foreach (IdentityUser user in _userManager.Users)
+				{
+					if (user.UserName == booking.UserName)
+					{
+						booking.UserId = user.Id;
+					}
+				}
+				foreach (Board surfboard in _context.Board)
+				{
+					if (booking.SurfboardId == surfboard.Id)
+					{
+						surfboard.IsBooked = true;
+					}
+				}
+				await _context.SaveChangesAsync();
+				return RedirectToAction(nameof(Index));
+			}
+			ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
+			ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
+			return View(booking);
+		}
+
+		// GET: Bookings/Edit/5
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Bookings == null)
             {
@@ -82,6 +105,7 @@ namespace SurfBoardWeb.Controllers
             {
                 return NotFound();
             }
+            ViewData["SurfBoardid"] = new SelectList(_context.Bookings, "Id", "Name", bookings.Id);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
             return View(bookings);
         }
@@ -118,7 +142,8 @@ namespace SurfBoardWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
+			ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", bookings.SurfboardId);
+			ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
             return View(bookings);
         }
 
@@ -131,6 +156,7 @@ namespace SurfBoardWeb.Controllers
             }
 
             var bookings = await _context.Bookings
+                .Include(bookings => bookings.Id)
                 .Include(b => b.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookings == null)
