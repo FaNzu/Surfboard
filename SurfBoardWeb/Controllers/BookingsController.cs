@@ -14,9 +14,9 @@ namespace SurfBoardWeb.Controllers
     public class BookingsController : Controller
     {
         private readonly SurfBoardWebContext _context;  
-		private readonly UserManager<IdentityUser> _userManager;
+		private readonly UserManager<DefaultUser> _userManager;
 
-		public BookingsController(SurfBoardWebContext context, UserManager<IdentityUser> userManager)
+		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager)
 		{
 			_context = context;
 			_userManager = userManager;
