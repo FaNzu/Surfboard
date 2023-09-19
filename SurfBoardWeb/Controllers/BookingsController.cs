@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardWeb.Data;
@@ -25,7 +26,7 @@ namespace SurfBoardWeb.Controllers
 		// GET: Bookings
 		public async Task<IActionResult> Index()
         {
-            var surfBoardWebContext = _context.Bookings.Include(b => b.SurfboardId).Include(b => b.User);
+            var surfBoardWebContext = _context.Bookings.Include(b => b.User);
             return View(await surfBoardWebContext.ToListAsync());
         }
 
@@ -64,7 +65,7 @@ namespace SurfBoardWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking, int id)
 		{
-			if (!ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
 				_context.Add(booking);
 				booking.SurfboardId = id;
@@ -87,7 +88,11 @@ namespace SurfBoardWeb.Controllers
 				await _context.SaveChangesAsync();
 				return RedirectToAction(nameof(Index));
 			}
-			ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
+            else
+            {
+                List<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors).ToList();
+            }
+            ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
 			ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
 			return View(booking);
 		}

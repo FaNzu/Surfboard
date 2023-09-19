@@ -93,7 +93,7 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account.Manage
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");
             }
-
+            // slet alle bookinger
             await _signInManager.SignOutAsync();
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
