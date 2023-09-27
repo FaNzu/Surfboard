@@ -12,7 +12,7 @@ using SurfBoardWeb.Data;
 namespace SurfBoardWeb.Migrations
 {
     [DbContext(typeof(SurfBoardWebContext))]
-    [Migration("20230915071925_test")]
+    [Migration("20230922092347_test")]
     partial class test
     {
         /// <inheritdoc />
@@ -170,14 +170,11 @@ namespace SurfBoardWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DefaultUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EndDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Equipment")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBooked")
+                        .HasColumnType("bit");
 
                     b.Property<double>("Length")
                         .HasColumnType("float");
@@ -198,9 +195,6 @@ namespace SurfBoardWeb.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<DateTime?>("StartDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<double>("Thickness")
                         .HasColumnType("float");
 
@@ -217,6 +211,46 @@ namespace SurfBoardWeb.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Board");
+                });
+
+            modelBuilder.Entity("SurfBoardWeb.Models.Bookings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SurfboardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BoardId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("SurfBoardWeb.Models.DefaultUser", b =>
@@ -333,6 +367,24 @@ namespace SurfBoardWeb.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SurfBoardWeb.Models.Bookings", b =>
+                {
+                    b.HasOne("SurfBoardWeb.Models.Board", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("BoardId");
+
+                    b.HasOne("SurfBoardWeb.Models.DefaultUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SurfBoardWeb.Models.Board", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }
