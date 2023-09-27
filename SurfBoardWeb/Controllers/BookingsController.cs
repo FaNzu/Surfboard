@@ -25,7 +25,7 @@ namespace SurfBoardWeb.Controllers
 		// GET: Bookings
 		public async Task<IActionResult> Index()
         {
-            var surfBoardWebContext = _context.Bookings.Include(b => b.SurfboardId).Include(b => b.User);
+            var surfBoardWebContext = _context.Bookings.Include(b => b.User);
             return View(await surfBoardWebContext.ToListAsync());
         }
 
@@ -64,33 +64,45 @@ namespace SurfBoardWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking, int id)
 		{
-			if (!ModelState.IsValid)
-			{
-				_context.Add(booking);
-				booking.SurfboardId = id;
-				booking.UserName = User.Identity.Name;
+            if (ModelState.IsValid)
+            {
+                var surf = _context.Board.Where(x => x.Id == id);
+                if (surf.First().IsBooked == true)
+                {
+                    ViewBag.Message = "This surfboard is booked";
+                    return View(booking);
+                }
+                else
+                {
 
-				foreach (IdentityUser user in _userManager.Users)
-				{
-					if (user.UserName == booking.UserName)
-					{
-						booking.UserId = user.Id;
-					}
-				}
-				foreach (Board surfboard in _context.Board)
-				{
-					if (booking.SurfboardId == surfboard.Id)
-					{
-						surfboard.IsBooked = true;
-					}
-				}
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
-			ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
-			return View(booking);
-		}
+                    _context.Add(booking);
+                    booking.SurfboardId = id;
+                    booking.UserName = User.Identity.Name;
+
+                    foreach (IdentityUser user in _userManager.Users)
+                    {
+                        if (user.UserName == booking.UserName)
+                        {
+                            booking.UserId = user.Id;
+                            break;
+                        }
+                    }
+                    foreach (Board surfboard in _context.Board)
+                    {
+                        if (booking.SurfboardId == surfboard.Id)
+                        {
+                            surfboard.IsBooked = true;
+                            break;
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
+            return View(booking);
+        }
 
 		// GET: Bookings/Edit/5
 		public async Task<IActionResult> Edit(int? id)
@@ -105,8 +117,6 @@ namespace SurfBoardWeb.Controllers
             {
                 return NotFound();
             }
-            ViewData["SurfBoardid"] = new SelectList(_context.Bookings, "Id", "Name", bookings.Id);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
             return View(bookings);
         }
 
@@ -115,36 +125,69 @@ namespace SurfBoardWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,EndDate,UserId,UserName,SurfboardId")] Bookings bookings)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,EndDate,UserId,UserName,SurfboardId")] byte[] rowVersion)
         {
-            if (id != bookings.Id)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var bookingToUpdate = await _context.Bookings.FirstOrDefaultAsync(i => i.Id == id);
+            if (bookingToUpdate == null)
+            {
+                Bookings deletedBooking = new Bookings();
+                await TryUpdateModelAsync(deletedBooking);
+                ModelState.AddModelError(string.Empty, "Unable to save changes. The booking was deleted by another user.");
+                ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Username", deletedBooking.Id);
+                return View(deletedBooking);
+            }
+            _context.Entry(bookingToUpdate).Property("RowVersion").OriginalValue = rowVersion;
+            if (await TryUpdateModelAsync<Bookings>(bookingToUpdate, "", s => s.StartDate, s => s.EndDate, s => s.SurfboardId, s => s.UserName))
             {
                 try
                 {
-                    _context.Update(bookings);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    if (!BookingsExists(bookings.Id))
+                    var exceptionEntry = ex.Entries.Single();
+                    var clientValues = (Bookings)exceptionEntry.Entity;
+                    var databaseEntry = exceptionEntry.GetDatabaseValues();
+                    if (databaseEntry == null)
                     {
-                        return NotFound();
+                        ModelState.AddModelError(string.Empty, "Unable to save changes. The surfboard was deleted by another user.");
                     }
                     else
                     {
-                        throw;
+                        var databaseValues = (Bookings)databaseEntry.ToObject();
+                        if (databaseValues.StartDate != clientValues.StartDate)
+                        {
+                            ModelState.AddModelError("Bookings Start Date", $"Current value: {databaseValues.StartDate}");
+                        }
+                        if (databaseValues.EndDate != clientValues.EndDate)
+                        {
+                            ModelState.AddModelError("Bookings End Date", $"Current value: {databaseValues.EndDate}");
+                        }
+                        if (databaseValues.SurfboardId != clientValues.SurfboardId)
+                        {
+                            ModelState.AddModelError("Surfboard", $"Current value: {databaseValues.SurfboardId}");
+                        }
+                        if (databaseValues.UserName != clientValues.UserName)
+                        {
+                            ModelState.AddModelError("Username", $"Current value: {databaseValues.UserName}");
+                        }
+
+                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
+                            + "was modified by another user after you got the original value. The"
+                            + "edit operation was canceled and the current values in the database "
+                            + "have been displayed. If you still want to edit this record, click "
+                            + "the Save button again. Otherwise click the Back to List hyperlink.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-			ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", bookings.SurfboardId);
-			ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bookings.UserId);
-            return View(bookings);
+            //ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Name", bookingToUpdate.Id);
+            return View(bookingToUpdate);
         }
 
         // GET: Bookings/Delete/5
@@ -155,16 +198,29 @@ namespace SurfBoardWeb.Controllers
                 return NotFound();
             }
 
-            var bookings = await _context.Bookings
-                .Include(bookings => bookings.Id)
-                .Include(b => b.User)
+            var booking = await _context.Bookings
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (bookings == null)
+
+            if (booking == null)
             {
+                if (concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
             }
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewData["ConcurrencyErrorMessage"] = "The record you attempted to delete "
+                    + "was modified by another user after you got the original values. "
+                    + "The delete operation was canceled and the current values in the "
+                    + "database have been displayed. If you still want to delete this "
+                    + "record, click the Delete button again. Otherwise "
+                    + "click the Back to List hyperlink.";
+            }
 
-            return View(bookings);
+            return View(booking);
         }
 
         // POST: Bookings/Delete/5
@@ -176,14 +232,22 @@ namespace SurfBoardWeb.Controllers
             {
                 return Problem("Entity set 'SurfBoardWebContext.Bookings'  is null.");
             }
-            var bookings = await _context.Bookings.FindAsync(id);
-            if (bookings != null)
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking != null)
             {
-                _context.Bookings.Remove(bookings);
+                foreach (Board surfboard in _context.Board)
+                {
+                    if (booking.SurfboardId == surfboard.Id)
+                    {
+                        surfboard.IsBooked = false;
+                        break;
+                    }
+                }
+                _context.Bookings.Remove(booking);
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); ;
         }
 
         private bool BookingsExists(int id)

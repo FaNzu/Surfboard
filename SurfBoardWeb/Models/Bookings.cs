@@ -8,10 +8,10 @@ namespace SurfBoardWeb.Models
     {
         public int Id { get; set; }
 
-        [Display(Name = "Booking starting date")]
+        [Display(Name = "Bookings starting date")]
         public DateTime StartDate { get; set; }
         
-        [Display(Name = "Booking ending date")]
+        [Display(Name = "Bookings ending date")]
         public DateTime EndDate { get; set; }
         
         public string? UserId { get; set; }
@@ -21,5 +21,8 @@ namespace SurfBoardWeb.Models
         public string UserName { get; set; }
         
         public int SurfboardId { get; set; }
+
+        [Timestamp]
+        public byte[]? RowVersion { get; set; }
     }
 }

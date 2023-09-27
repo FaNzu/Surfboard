@@ -49,5 +49,7 @@ namespace SurfBoardWeb.Models
 
         public bool IsBooked { get; set; }
         public ICollection<Bookings> Bookings { get; set; }
+
+
     }
 }
