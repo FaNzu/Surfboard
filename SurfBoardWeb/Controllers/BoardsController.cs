@@ -291,21 +291,36 @@ namespace SurfBoardWeb.Controllers
         
 
         // GET: Boards/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
             if (id == null || _context.Board == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board
+            var surfboard = await _context.Board
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
+
+            if (surfboard == null)
             {
+                if (concurrencyError.GetValueOrDefault())
+                {
+                    return RedirectToAction(nameof(Index));
+                }
                 return NotFound();
             }
+            if (concurrencyError.GetValueOrDefault())
+            {
+                ViewData["ConcurrencyErrorMessage"] = "The record you attempted to delete "
+                    + "was modified by another user after you got the original values. "
+                    + "The delete operation was canceled and the current values in the "
+                    + "database have been displayed. If you still want to delete this "
+                    + "record, click the Delete button again. Otherwise "
+                    + "click the Back to List hyperlink.";
+            }
 
-            return View(board);
+            return View(surfboard);
         }
 
         // POST: Boards/Delete/5
@@ -313,9 +328,9 @@ namespace SurfBoardWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Board == null)
+             if (_context.Board == null)
             {
-                return Problem("Entity set 'SurfBoardWebContext.Board'  is null.");
+                return Problem("Entity set 'surfboardwebcontext.Board'  is null.");
             }
             var board = await _context.Board.FindAsync(id);
             if (board != null)
@@ -326,69 +341,6 @@ namespace SurfBoardWeb.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        //public async Task<IActionResult> Rent(int id)
-        //{
-        //    if (_context.Board == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var board = await _context.Board
-        //        .FirstOrDefaultAsync(model => model.Id == id);
-        //    if (board == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(board);
-        //}
-
-        //[HttpPost, ActionName("Rent")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> RentPost(int id, [Bind("Id,Name,Width,Height,Thickness,Volume,Price,Type,Equipments,StartDate, EndDate")] Board board)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            var existingBoard = await _context.Board
-        //                .FirstOrDefaultAsync(model => model.Id == id);
-                    
-        //            if (existingBoard == null)
-        //                return NotFound();
-
-        //            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //            existingBoard.DefaultUserId = userId;
-        //            existingBoard.StartDate = board.StartDate;
-        //            existingBoard.EndDate = board.EndDate;
-
-        //            _context.Attach(existingBoard).State = EntityState.Modified;
-
-        //            await _context.SaveChangesAsync();
-
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!BoardExists(board.Id))
-        //                return NotFound();
-        //            else
-        //                throw;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var errors = ModelState.Values.SelectMany(v => v.Errors).ToList();
-        //    }
-        //    return View(board);
-        //}
 
         private bool BoardExists(int id)
         {
