@@ -1,4 +1,5 @@
-﻿@inject SignInManager<DefaultUser> SignInManager
+﻿@using SurfProxyApi.Models;
+@inject SignInManager<DefaultUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

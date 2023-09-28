@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SurfBoardWeb.Models;
+using SurfProxyApi.Models;
 
-namespace SurfBoardWeb.Data
+namespace SurfProxyApi.Data
 {
     public class SurfBoardWebContext : IdentityDbContext<DefaultUser>
     {
@@ -15,7 +15,7 @@ namespace SurfBoardWeb.Data
         {
         }
 
-        public DbSet<SurfBoardWeb.Models.Board> Board { get; set; } = default!;
-        public DbSet<SurfBoardWeb.Models.Bookings> Bookings { get; set; }
+        public DbSet<Board> Board { get; set; } = default!;
+        public DbSet<Bookings> Bookings { get; set; }
     }
 }

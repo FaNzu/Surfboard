@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using SurfBoardWeb.Models;
+using SurfProxyApi.Models;
 
 namespace SurfBoardWeb.Areas.Identity.Pages.Account
 {

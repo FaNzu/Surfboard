@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace SurfBoardWeb.Models
+namespace SurfProxyApi.Models
 {
     public class Bookings
     {

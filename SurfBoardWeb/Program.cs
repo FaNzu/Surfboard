@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SurfBoardWeb.Data;
+using SurfProxyApi.Data;
 using Microsoft.AspNetCore.Identity;
-using SurfBoardWeb.Models;
-
+using SurfProxyApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfBoardWebContext>(options =>
@@ -24,6 +23,9 @@ if (!app.Environment.IsDevelopment())
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
 }
+
+
+
 using (var scope = app.Services.CreateScope())
 {
     var roleM = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -37,7 +39,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-
 using (var scope = app.Services.CreateScope())
 {
     var userM = scope.ServiceProvider.GetRequiredService<UserManager<DefaultUser>>();
@@ -61,16 +62,36 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
+using (var scope = app.Services.CreateScope())
+{
+    var userM = scope.ServiceProvider.GetRequiredService<UserManager<DefaultUser>>();
+
+    string email = "user@user.com";
+    string password = "User4$";
+    if (await userM.FindByEmailAsync(email) == null)
+    {
+        var user = new DefaultUser
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true
+        };
+
+        var result = await userM.CreateAsync(user, password);
+
+        if (result.Succeeded)
+        {
+            await userM.AddToRoleAsync(user, "User");
+        }
+    }
+}
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-    app.UseAuthentication();;
-
-app.UseAuthorization();
-
-			
+app.UseAuthentication();;
 
 app.MapControllerRoute(
 	name: "default", 

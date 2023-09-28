@@ -1,3 +1,6 @@
+using System.Runtime.Intrinsics.X86;
+//using SurfProxyApi.Seeders;
+
 namespace SurfProxyApi
 {
     public class Program
@@ -22,9 +25,15 @@ namespace SurfProxyApi
                 app.UseSwaggerUI();
             }
 
+            app.UseAuthorization();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    SeedSurfboards.Initialize(services);
+            //}
+
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
 
 
             app.MapControllers();

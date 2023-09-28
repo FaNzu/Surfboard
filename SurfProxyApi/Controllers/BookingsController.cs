@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SurfBoardWeb.Models;
-using SurfBoardWeb.Data;
-using SurfBoardWeb.Areas.Identity;
+using SurfProxyApi.Models;
+using SurfProxyApi.Data;
+using SurfProxyApi.Areas.Identity;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardWeb.Migrations;
 using Microsoft.EntityFrameworkCore;

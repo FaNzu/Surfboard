@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SurfBoardWeb.Models
+namespace SurfProxyApi.Models
 {
     public class Board
     {

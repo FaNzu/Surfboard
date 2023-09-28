@@ -1,4 +1,4 @@
-namespace SurfBoardWeb.Models
+namespace SurfProxyApi.Models
 {
 	public class ErrorViewModel
 	{

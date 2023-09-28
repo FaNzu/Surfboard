@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace SurfBoardWeb.Models
+namespace SurfProxyApi.Models
 {
     public class BoardTypeViewModel
     {

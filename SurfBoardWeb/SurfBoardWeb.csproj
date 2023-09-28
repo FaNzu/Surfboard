@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Models\ViewModel\" />
+    <ProjectReference Include="..\SurfProxyApi\SurfProxyApi.csproj" />
   </ItemGroup>
 
 </Project>
