@@ -1,5 +1,7 @@
 using System.Runtime.Intrinsics.X86;
-//using SurfProxyApi.Seeders;
+using Microsoft.EntityFrameworkCore;
+using SurfProxyApi.Data;
+using SurfProxyApi.Seeders;
 
 namespace SurfProxyApi
 {
@@ -7,9 +9,11 @@ namespace SurfProxyApi
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<SurfBoardWebContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,11 +30,12 @@ namespace SurfProxyApi
             }
 
             app.UseAuthorization();
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var services = scope.ServiceProvider;
-            //    SeedSurfboards.Initialize(services);
-            //}
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                SeedSurfboards.Initialize(services);
+            }
 
             app.UseHttpsRedirection();
 

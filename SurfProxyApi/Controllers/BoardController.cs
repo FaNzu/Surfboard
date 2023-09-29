@@ -17,6 +17,7 @@ namespace SurfProxyApi.Controllers
         {
             _context = context;
         }
+
         [ProducesResponseType(typeof(Board), 201)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(500)]
@@ -31,5 +32,21 @@ namespace SurfProxyApi.Controllers
             }
             return BadRequest();
         }
+
+        [ProducesResponseType(typeof(Board), 201)]
+        [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
+        [ProducesResponseType(500)]
+        [HttpGet("Read", Name = "List of Surfboards")]
+        public async Task<ActionResult> Get([FromBody] Board board)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(board);
+                await _context.SaveChangesAsync();
+                return new ObjectResult(board) { StatusCode = StatusCodes.Status201Created };
+            }
+            return BadRequest();
+        }
+
     }
 }

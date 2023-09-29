@@ -30,7 +30,7 @@ namespace SurfProxyApi.Controllers
         [ProducesResponseType(typeof(Bookings), 201)]
         [ProducesResponseType(typeof(IDictionary<string, string>), 400)]
         [ProducesResponseType(500)]
-        [HttpPost("Create", Name = " Create Booking ")]
+        [HttpPost("CreateBooking", Name = "Create Booking ")]
         public async Task<ActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking)
         {
 
