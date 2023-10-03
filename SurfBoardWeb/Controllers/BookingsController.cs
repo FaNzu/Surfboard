@@ -71,6 +71,35 @@ namespace SurfBoardWeb.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking, int id)
 		{
+            //string userName = User.Identity.Name;
+            //foreach (IdentityUser user in _userManager.Users)
+            //{
+            //    if (user.UserName == userName)
+            //    {
+            //        booking.UserId = user.Id;
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        return BadRequest("no user found");
+            //    }
+            //}
+
+            //var bookinigrequestvm = localhostblablabla{ Data } + { userid}
+            
+            //foreach (Board surfboard in _context.Board)
+            //{
+            //    if (givenBooking.BoardId == surfboard.Id)
+            //    {
+            //        surfboard.IsBooked = true;
+            //        break;
+            //    }
+            //}
+
+            //// if null bad request
+
+            //return View(bookinigrequestvm);
+
             if (ModelState.IsValid)
             {
                 var surfboardExist = _context.Board.Where(x => x.Id == id);
