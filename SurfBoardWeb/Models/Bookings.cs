@@ -17,8 +17,5 @@ namespace SurfBoardWeb.Models
         public string? UserId { get; set; }
         
         public int BoardId { get; set; }
-
-        [Timestamp]
-        public byte[]? RowVersion { get; set; }
     }
 }
