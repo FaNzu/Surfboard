@@ -6,19 +6,11 @@ namespace SurfboardApi.Models
 {
     public class Bookings
     {
-        public int BookingId { get; set; }
-
-        [Display(Name = "Bookings starting date")]
+        public int BookingsId { get; set; }
         public DateTime StartDate { get; set; }
-
-        [Display(Name = "Bookings ending date")]
         public DateTime EndDate { get; set; }
-
         public string? UserId { get; set; }
-
         public int BoardId { get; set; }
 
-        [Timestamp]
-        public byte[]? RowVersion { get; set; }
     }
 }

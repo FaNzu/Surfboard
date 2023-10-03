@@ -69,7 +69,7 @@ namespace SurfBoardWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,SurfboardId")] Bookings booking, int id)
+		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,BoardId")] Bookings booking, int id) //Ændre alt til BookingRequestVM requestedVM
 		{
             //string userName = User.Identity.Name;
             //foreach (IdentityUser user in _userManager.Users)
@@ -85,7 +85,7 @@ namespace SurfBoardWeb.Controllers
             //    }
             //}
 
-            //var bookinigrequestvm = localhostblablabla{ Data } + { userid}
+            //var bookinigrequestvm = localhostblablabla{ BookingRequestVM}
             
             //foreach (Board surfboard in _context.Board)
             //{

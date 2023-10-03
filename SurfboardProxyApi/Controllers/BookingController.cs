@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfboardApi.Data;
 using SurfboardApi.Models;
+using SurfboardApi.Models.ViewModels;
 
 namespace SurfboardApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace SurfboardApi.Controllers
         private readonly SurfBoardApiContext _context;
 
 
-        public BookingController (IConfiguration config,ILogger<BookingController> logger, HttpClient httpClient, SurfBoardApiContext context)
+        public BookingController(IConfiguration config, ILogger<BookingController> logger, HttpClient httpClient, SurfBoardApiContext context)
         {
             _config = config;
             _logger = logger;
@@ -31,7 +32,7 @@ namespace SurfboardApi.Controllers
         [HttpGet, ActionName("GetBookings")]
         public async Task<IActionResult> GetBooking()
         {
-            var resultbooking= _context.Bookings;
+            var resultbooking = _context.Bookings;
 
             if (resultbooking == null)
             {
@@ -42,30 +43,31 @@ namespace SurfboardApi.Controllers
         }
 
 
-        [HttpPost, ActionName("PostBooking")]
-        public async Task<IActionResult> CreateBooking(Bookings givenBooking, Board givenBoard, string userId) //booking request viewmodel
+        [HttpPost , ActionName("PostBooking")]
+        public async Task<IActionResult> CreateBooking(Bookings bookings) //booking request viewmodel
         {
             if (ModelState.IsValid)
             {
-                var surfboardExist = _context.Board.Where(x => x.BoardId == givenBoard.BoardId);
-                if (surfboardExist.First().IsBooked == true)
+                foreach (Board board in _context.Board)
                 {
-                    //ViewBag.Message = "This surfboard is booked";
-                    return BadRequest(givenBoard);
+                    if (bookings.BoardId == board.BoardId)
+                    {
+                        board.IsBooked = true;
+                        break;
+                    }
                 }
-                else
+                try
                 {
-                    _context.Add(givenBooking);
-                    givenBooking.BoardId = givenBoard.BoardId;
-
-                    //if userid == nul return bad request
-                    givenBooking.UserId = userId;
-
-                    
+                    _context.Bookings.Add(bookings);
                     await _context.SaveChangesAsync();
-                    return Ok();
+                    return Ok(new { Message = "Booking created" });
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(ex);
                 }
             }
+            return BadRequest(new { Message = "Booking not created " });
             //ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
             //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
             //return View(booking);
@@ -78,10 +80,6 @@ namespace SurfboardApi.Controllers
             //createdBooking.StartDate = startdate;
             //createdBooking.UserId = userId;
             //createdBooking.BoardId = givenBoard.Id;
-
-
-
-            return NotFound();
         }
     }
 }
