@@ -40,7 +40,7 @@ namespace SurfBoardWeb.Controllers
             var bookings = await _context.Bookings
                 .Include(b => b.BoardId)
                 .Include(b => b.UserId)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BookingsId == id);
             if (bookings == null)
             {
                 return NotFound();
@@ -102,7 +102,7 @@ namespace SurfBoardWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                var surfboardExist = _context.Board.Where(x => x.Id == id);
+                var surfboardExist = _context.Board.Where(x => x.BoardId == id);
                 if (surfboardExist.First().IsBooked == true)
                 {
                     ViewBag.Message = "This surfboard is booked";
@@ -124,7 +124,7 @@ namespace SurfBoardWeb.Controllers
                     }
                     foreach (Board surfboard in _context.Board)
                     {
-                        if (booking.BoardId == surfboard.Id)
+                        if (booking.BoardId == surfboard.BoardId)
                         {
                             surfboard.IsBooked = true;
                             break;
@@ -147,7 +147,7 @@ namespace SurfBoardWeb.Controllers
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id);
+            var booking = await _context.Bookings.AsNoTracking().FirstOrDefaultAsync(i => i.BookingsId == id);
             if (booking == null)
             {
                 return NotFound();
@@ -167,13 +167,13 @@ namespace SurfBoardWeb.Controllers
                 return NotFound();
             }
 
-            var bookingToUpdate = await _context.Bookings.FirstOrDefaultAsync(i => i.Id == id);
+            var bookingToUpdate = await _context.Bookings.FirstOrDefaultAsync(i => i.BookingsId == id);
             if (bookingToUpdate == null)
             {
                 Bookings deletedBooking = new Bookings();
                 await TryUpdateModelAsync(deletedBooking);
                 ModelState.AddModelError(string.Empty, "Unable to save changes. The booking was deleted by another user.");
-                ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Username", deletedBooking.Id);
+                ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Username", deletedBooking.BookingsId);
                 return View(deletedBooking);
             }
             _context.Entry(bookingToUpdate).Property("RowVersion").OriginalValue = rowVersion;
@@ -232,7 +232,7 @@ namespace SurfBoardWeb.Controllers
 
             var booking = await _context.Bookings
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BookingsId == id);
 
             if (booking == null)
             {
@@ -269,7 +269,7 @@ namespace SurfBoardWeb.Controllers
             {
                 foreach (Board surfboard in _context.Board)
                 {
-                    if (booking.BoardId == surfboard.Id)
+                    if (booking.BoardId == surfboard.BoardId)
                     {
                         surfboard.IsBooked = false;
                         break;
@@ -284,7 +284,7 @@ namespace SurfBoardWeb.Controllers
 
         private bool BookingsExists(int id)
         {
-          return _context.Bookings.Any(e => e.Id == id);
+          return _context.Bookings.Any(e => e.BookingsId == id);
         }
     }
 }

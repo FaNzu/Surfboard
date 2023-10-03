@@ -7,7 +7,7 @@ namespace SurfBoardWeb.Models
     public class Board
     {
         
-        public int Id { get; set; }
+        public int BoardId { get; set; }
 
         [StringLength(60, MinimumLength = 5)]
         [Required]
