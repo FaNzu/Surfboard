@@ -44,7 +44,7 @@ namespace SurfboardApi.Controllers
 
 
         [HttpPost , ActionName("PostBooking")]
-        public async Task<IActionResult> CreateBooking(Bookings bookings) //booking request viewmodel
+        public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
         {
             if (ModelState.IsValid)
             {
@@ -58,7 +58,8 @@ namespace SurfboardApi.Controllers
                 }
                 try
                 {
-                    _context.Bookings.Add(bookings);
+                    Bookings bookingstest = new Bookings(bookings.StartDate, bookings.EndDate, bookings.UserId, bookings.BoardId);
+                    _context.Bookings.Add(bookingstest);
                     await _context.SaveChangesAsync();
                     return Ok(new { Message = "Booking created" });
                 }
