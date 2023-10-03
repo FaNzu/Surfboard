@@ -25,7 +25,7 @@ namespace SurfBoardWeb.Controllers
 		// GET: Bookings
 		public async Task<IActionResult> Index()
         {
-            var surfBoardWebContext = _context.Bookings.Include(b => b.User);
+            var surfBoardWebContext = _context.Bookings.Include(b => b.UserId);
             return View(await surfBoardWebContext.ToListAsync());
         }
 
@@ -38,8 +38,8 @@ namespace SurfBoardWeb.Controllers
             }
 
             var bookings = await _context.Bookings
-                .Include(b => b.SurfboardId)
-                .Include(b => b.User)
+                .Include(b => b.BoardId)
+                .Include(b => b.UserId)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bookings == null)
             {
@@ -82,12 +82,12 @@ namespace SurfBoardWeb.Controllers
                 else
                 {
                     _context.Add(booking);
-                    booking.SurfboardId = id;
-                    booking.UserName = User.Identity.Name;
+                    booking.BoardId = id;
+                    string userName = User.Identity.Name;
 
                     foreach (IdentityUser user in _userManager.Users)
                     {
-                        if (user.UserName == booking.UserName)
+                        if (user.UserName == userName)
                         {
                             booking.UserId = user.Id;
                             break;
@@ -95,7 +95,7 @@ namespace SurfBoardWeb.Controllers
                     }
                     foreach (Board surfboard in _context.Board)
                     {
-                        if (booking.SurfboardId == surfboard.Id)
+                        if (booking.BoardId == surfboard.Id)
                         {
                             surfboard.IsBooked = true;
                             break;
@@ -105,7 +105,7 @@ namespace SurfBoardWeb.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.SurfboardId);
+            ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
             return View(booking);
         }
@@ -148,7 +148,7 @@ namespace SurfBoardWeb.Controllers
                 return View(deletedBooking);
             }
             _context.Entry(bookingToUpdate).Property("RowVersion").OriginalValue = rowVersion;
-            if (await TryUpdateModelAsync<Bookings>(bookingToUpdate, "", s => s.StartDate, s => s.EndDate, s => s.SurfboardId, s => s.UserName))
+            if (await TryUpdateModelAsync<Bookings>(bookingToUpdate, "", s => s.StartDate, s => s.EndDate, s => s.BoardId))
             {
                 try
                 {
@@ -175,14 +175,11 @@ namespace SurfBoardWeb.Controllers
                         {
                             ModelState.AddModelError("Bookings End Date", $"Current value: {databaseValues.EndDate}");
                         }
-                        if (databaseValues.SurfboardId != clientValues.SurfboardId)
+                        if (databaseValues.BoardId != clientValues.BoardId)
                         {
-                            ModelState.AddModelError("Surfboard", $"Current value: {databaseValues.SurfboardId}");
+                            ModelState.AddModelError("Surfboard", $"Current value: {databaseValues.BoardId}");
                         }
-                        if (databaseValues.UserName != clientValues.UserName)
-                        {
-                            ModelState.AddModelError("Username", $"Current value: {databaseValues.UserName}");
-                        }
+                        
 
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
                             + "was modified by another user after you got the original value. The"
@@ -243,7 +240,7 @@ namespace SurfBoardWeb.Controllers
             {
                 foreach (Board surfboard in _context.Board)
                 {
-                    if (booking.SurfboardId == surfboard.Id)
+                    if (booking.BoardId == surfboard.Id)
                     {
                         surfboard.IsBooked = false;
                         break;
