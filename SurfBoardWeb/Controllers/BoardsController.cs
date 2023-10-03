@@ -143,7 +143,7 @@ namespace SurfBoardWeb.Controllers
             }
 
             var board = await _context.Board
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BoardId == id);
             if (board == null)
             {
                 return NotFound();
@@ -202,7 +202,7 @@ namespace SurfBoardWeb.Controllers
                 return NotFound();
             }
 
-            var BoardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.Id == id);
+            var BoardToUpdate = await _context.Board.FirstOrDefaultAsync(m => m.BoardId == id);
 
             if (BoardToUpdate == null)
             {
@@ -300,7 +300,7 @@ namespace SurfBoardWeb.Controllers
 
             var surfboard = await _context.Board
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.BoardId == id);
 
             if (surfboard == null)
             {
@@ -344,7 +344,7 @@ namespace SurfBoardWeb.Controllers
 
         private bool BoardExists(int id)
         {
-          return (_context.Board?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Board?.Any(e => e.BoardId == id)).GetValueOrDefault();
         }
     }
 }

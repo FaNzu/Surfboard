@@ -6,7 +6,7 @@ namespace SurfboardApi.Models
 {
     public class Bookings
     {
-        public int Id { get; set; }
+        public int BookingId { get; set; }
 
         [Display(Name = "Bookings starting date")]
         public DateTime StartDate { get; set; }

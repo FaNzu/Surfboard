@@ -92,16 +92,16 @@
             @if (User.IsInRole("Admin"))
             {
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.BoardId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.BoardId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.BoardId">Delete</a>
                 </td>
             }
             @if (User.IsInRole("User"))
             {
                 <td>
-                    @*<a asp-action="Rent" asp-route-id="@item.Id">Udlej</a>*@
-                    <a asp-controller="Bookings" asp-route-id="@item.Id" asp-action="Create">Book board</a>
+                    @*<a asp-action="Rent" asp-route-id="@item.Id">BoardId</a>*@
+                        <a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
                 </td>
             }
         </tr>

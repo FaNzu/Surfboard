@@ -47,7 +47,7 @@ namespace SurfboardApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var surfboardExist = _context.Board.Where(x => x.Id == givenBoard.Id);
+                var surfboardExist = _context.Board.Where(x => x.BoardId == givenBoard.BoardId);
                 if (surfboardExist.First().IsBooked == true)
                 {
                     //ViewBag.Message = "This surfboard is booked";
@@ -56,7 +56,7 @@ namespace SurfboardApi.Controllers
                 else
                 {
                     _context.Add(givenBooking);
-                    givenBooking.BoardId = givenBoard.Id;
+                    givenBooking.BoardId = givenBoard.BoardId;
 
                     //if userid == nul return bad request
                     givenBooking.UserId = userId;
