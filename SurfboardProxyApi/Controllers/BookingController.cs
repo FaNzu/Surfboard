@@ -29,7 +29,7 @@ namespace SurfboardApi.Controllers
         #endregion
 
 
-        [HttpGet, ActionName("GetBookings")]
+        [HttpGet("GetBookings"), ActionName("GetBookings")]
         public async Task<IActionResult> GetBooking()
         {
             var resultbooking = _context.Bookings;
@@ -43,7 +43,7 @@ namespace SurfboardApi.Controllers
         }
 
 
-        [HttpPost , ActionName("PostBooking")]
+        [HttpPost("Create") , ActionName("PostBooking")]
         public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
         {
             if (ModelState.IsValid)
@@ -69,18 +69,6 @@ namespace SurfboardApi.Controllers
                 }
             }
             return BadRequest(new { Message = "Booking not created " });
-            //ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
-            //return View(booking);
-
-            //not
-
-
-            //Bookings createdBooking = new Bookings();
-            //createdBooking.EndDate = endtime;
-            //createdBooking.StartDate = startdate;
-            //createdBooking.UserId = userId;
-            //createdBooking.BoardId = givenBoard.Id;
         }
     }
 }
