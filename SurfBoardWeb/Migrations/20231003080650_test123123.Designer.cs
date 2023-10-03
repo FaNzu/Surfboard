@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfBoardWeb.Data;
 
@@ -11,9 +12,11 @@ using SurfBoardWeb.Data;
 namespace SurfBoardWeb.Migrations
 {
     [DbContext(typeof(SurfBoardWebContext))]
-    partial class SurfBoardWebContextModelSnapshot : ModelSnapshot
+    [Migration("20231003080650_test123123")]
+    partial class test123123
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
