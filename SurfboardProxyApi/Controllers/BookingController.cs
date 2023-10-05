@@ -48,14 +48,19 @@ namespace SurfboardApi.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool boardexists = false;
                 foreach (Board board in _context.Board)
                 {
                     if (bookings.BoardId == board.BoardId)
                     {
                         board.IsBooked = true;
+                        boardexists = true;
                         break;
                     }
                 }
+                if (!boardexists) { return BadRequest("Board not found with the specified BoardId."); }
+
+
                 try
                 {
                     Bookings bookingstest = new Bookings(bookings.StartDate, bookings.EndDate, bookings.UserId, bookings.BoardId);
