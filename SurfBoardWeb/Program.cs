@@ -1,10 +1,9 @@
-using SurfBoardWeb.Data.SeedData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardWeb.Models;
-
+using SurfBoardWeb.Models.SeedData;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfBoardWebContext>(options =>

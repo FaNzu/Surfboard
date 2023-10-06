@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
+using SurfBoardWeb.Data;
 using SurfBoardWeb.Models;
 
-namespace SurfBoardWeb.Data.SeedData
+namespace SurfBoardWeb.Models.SeedData
 {
     public class SeedData
     {
