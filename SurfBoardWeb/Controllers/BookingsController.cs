@@ -14,23 +14,23 @@ namespace SurfBoardWeb.Controllers
 {
     public class BookingsController : Controller
     {
-        private readonly SurfBoardWebContext _context;  
-		private readonly UserManager<DefaultUser> _userManager;
+        private readonly SurfBoardWebContext _context;
+        private readonly UserManager<DefaultUser> _userManager;
 
-		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager)
-		{
-			_context = context;
-			_userManager = userManager;
-		}
+        public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
-		// GET: Bookings
-		public async Task<IActionResult> Index()
+        // GET: Bookings
+        public async Task<IActionResult> Index()
         {
             var surfBoardWebContext = _context.Bookings.Include(b => b.UserId);
             return View(await surfBoardWebContext.ToListAsync());
         }
 
-        
+
 
         // GET: Bookings/Create
         public IActionResult Create(int id)
@@ -40,52 +40,52 @@ namespace SurfBoardWeb.Controllers
             return View();
         }
 
-        
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("StartDate,EndDate,UserId,BoardId,email,phoneNumber")] BookingRequestVM booking, int id) //Ændre alt til BookingRequestVM requestedVM
-		{
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("StartDate,EndDate,UserId,BoardId,email,phoneNumber")] BookingRequestVM booking, int id) //Ændre alt til BookingRequestVM requestedVM
+        {
             //booking.BoardId = id;
             if (ModelState.IsValid)
             {
-                //var surfboardExist = _context.Board.Where(x => x.BoardId == id);
-                //if (surfboardExist.First().IsBooked == true)
-                //{
-                //    ViewBag.Message = "This surfboard is booked";
-                //    return View(booking);
-                //}
-                //else
-                //{
-                    if(User.Identity.Name != null)
-                    {
-                        //create seudo user with manager
-                        DefaultUser newUser = new DefaultUser();
-                        newUser.Email = booking.email;
-                        newUser.PhoneNumber = booking.phoneNumber;
-                        _userManager.CreateAsync(newUser);
-                    }
-                    _context.Add(booking);
-                    booking.BoardId = id;
-                    string userName = User.Identity.Name;
 
-                    foreach (IdentityUser user in _userManager.Users)
+                if (User.Identity.Name != null)
+                {
+                    //create seudo user with manager
+                    DefaultUser newUser = new DefaultUser();
+                    newUser.Email = booking.email;
+                    newUser.PhoneNumber = booking.phoneNumber;
+                    _userManager.CreateAsync(newUser);
+                }
+                Bookings createdBooking = new Bookings();
+
+                createdBooking.StartDate = booking.StartDate;
+                createdBooking.EndDate = booking.EndDate;
+                createdBooking.UserId = booking.UserId;
+                createdBooking.BoardId = booking.BoardId;
+
+                booking.BoardId = id;
+                string userName = User.Identity.Name;
+
+                foreach (IdentityUser user in _userManager.Users)
+                {
+                    if (user.UserName == userName)
                     {
-                        if (user.UserName == userName)
-                        {
-                            booking.UserId = user.Id;
-                            break;
-                        }
+						createdBooking.UserId = user.Id;
+                        break;
                     }
-                    foreach (Board surfboard in _context.Board)
+                }
+                foreach (Board surfboard in _context.Board)
+                {
+                    if (booking.BoardId == surfboard.BoardId)
                     {
-                        if (booking.BoardId == surfboard.BoardId)
-                        {
-                            surfboard.IsBooked = true;
-                            break;
-                        }
+                        surfboard.IsBooked = true;
+                        break;
                     }
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                }
+                _context.Add(createdBooking);
+                await _context.SaveChangesAsync();
+                return Redirect("/Boards");
                 //}
             }
             return BadRequest(ModelState);
@@ -94,7 +94,7 @@ namespace SurfBoardWeb.Controllers
             //return View(booking);
         }
 
-		
+
 
         // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
@@ -158,7 +158,7 @@ namespace SurfBoardWeb.Controllers
 
         private bool BookingsExists(int id)
         {
-          return _context.Bookings.Any(e => e.BookingsId == id);
+            return _context.Bookings.Any(e => e.BookingsId == id);
         }
     }
 }

@@ -84,6 +84,13 @@
 				<td>
 					<img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
 				</td>
+				@if (item.BoardId % 2 == 0 && !User.IsInRole("Admin") && !User.IsInRole("PremiumUser"))
+				{
+					@*hvis bruger er alm bruger, og board id er lige*@
+					<td>
+						<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
+					</td>
+				}
 				@if (User.IsInRole("Admin"))
 				{
 					<td>
@@ -95,13 +102,6 @@
 				@if (User.IsInRole("PremiumUser"))
 				{
 					@*lav if hvis board er booked, ik hvis*@
-					<td>
-						<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
-					</td>
-				}
-				@if (item.BoardId%2==0)
-				{
-					@*hvis bruger er alm bruger, og board id er lige*@
 					<td>
 						<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
 					</td>

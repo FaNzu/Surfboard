@@ -29,7 +29,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-   SeedData.Initialize(services);
+   SeedBoard.Initialize(services);
 }
 
 using (var scope = app.Services.CreateScope())

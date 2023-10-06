@@ -5,7 +5,7 @@ using SurfBoardWeb.Models;
 
 namespace SurfBoardWeb.Models.SeedData
 {
-    public class SeedData
+    public class SeedBoard
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
