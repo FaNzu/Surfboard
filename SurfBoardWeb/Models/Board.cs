@@ -45,7 +45,7 @@ namespace SurfBoardWeb.Models
         public byte[] RowVersion { get; set; }
 
         public string Equipment { get; set; }
-        public string PicturePath { get; set; }
+        public string? PicturePath { get; set; }
 
         public bool IsBooked { get; set; }
         public ICollection<Bookings> Bookings { get; set; }
