@@ -127,7 +127,7 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    var roleName = "User";
+                    var roleName = "PremiumUser";
                     var role = await _roleManager.FindByNameAsync(roleName);
                     if (role != null)
                     {

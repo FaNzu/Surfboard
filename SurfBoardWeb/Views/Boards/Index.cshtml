@@ -92,9 +92,16 @@
 						<a asp-action="Delete" asp-route-id="@item.BoardId">Delete</a>
 					</td>
 				}
-				@if (User.IsInRole("User"))
+				@if (User.IsInRole("PremiumUser"))
 				{
 					@*lav if hvis board er booked, ik hvis*@
+					<td>
+						<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
+					</td>
+				}
+				@if (item.BoardId%2==0)
+				{
+					@*hvis bruger er alm bruger, og board id er lige*@
 					<td>
 						<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
 					</td>

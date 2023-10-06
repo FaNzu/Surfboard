@@ -27,7 +27,7 @@ if (!app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var roleM = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "User" };
+    var roles = new[] { "Admin", "User" , "PremiumUser" };
 
     foreach (var role in roles)
     {
