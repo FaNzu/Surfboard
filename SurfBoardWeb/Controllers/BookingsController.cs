@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardWeb.Data;
 using SurfBoardWeb.Models;
+using SurfBoardWeb.Models.ViewModels;
 
 namespace SurfBoardWeb.Controllers
 {
@@ -29,87 +30,40 @@ namespace SurfBoardWeb.Controllers
             return View(await surfBoardWebContext.ToListAsync());
         }
 
-        // GET: Bookings/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Bookings == null)
-            {
-                return NotFound();
-            }
-
-            var bookings = await _context.Bookings
-                .Include(b => b.BoardId)
-                .Include(b => b.UserId)
-                .FirstOrDefaultAsync(m => m.BookingsId == id);
-            if (bookings == null)
-            {
-                return NotFound();
-            }
-
-            return View(bookings);
-        }
+        
 
         // GET: Bookings/Create
         public IActionResult Create(int id)
         {
-            //var surfboardExist = _context.Board.Where(x => x.Id == id);
-            //if (surfboardExist.First().IsBooked == true)
-            //{
-            //    ViewBag.Message = "This surfboard is booked";
-            //    return View();
-            //}
-            //kontrol af hvis booking af boardid findes, hvis boarded allerede har booking fortæl user der er en fejl., hvis ikke fortsæt.
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["BoardId"] = new SelectList(_context.Board, "Id", "Id");
+            ViewData["BoardId"] = id;
             return View();
         }
 
-        // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("BookingStartDate,BookingEndDate,UserId,BoardId")] Bookings booking, int id) //Ændre alt til BookingRequestVM requestedVM
+		public async Task<IActionResult> Create([Bind("StartDate,EndDate,UserId,BoardId,email,phoneNumber")] BookingRequestVM booking, int id) //Ændre alt til BookingRequestVM requestedVM
 		{
-            //string userName = User.Identity.Name;
-            //foreach (IdentityUser user in _userManager.Users)
-            //{
-            //    if (user.UserName == userName)
-            //    {
-            //        booking.UserId = user.Id;
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        return BadRequest("no user found");
-            //    }
-            //}
-
-            //var bookinigrequestvm = localhostblablabla{ BookingRequestVM}
-            
-            //foreach (Board surfboard in _context.Board)
-            //{
-            //    if (givenBooking.BoardId == surfboard.Id)
-            //    {
-            //        surfboard.IsBooked = true;
-            //        break;
-            //    }
-            //}
-
-            //// if null bad request
-
-            //return View(bookinigrequestvm);
-
+            //booking.BoardId = id;
             if (ModelState.IsValid)
             {
-                var surfboardExist = _context.Board.Where(x => x.BoardId == id);
-                if (surfboardExist.First().IsBooked == true)
-                {
-                    ViewBag.Message = "This surfboard is booked";
-                    return View(booking);
-                }
-                else
-                {
+                //var surfboardExist = _context.Board.Where(x => x.BoardId == id);
+                //if (surfboardExist.First().IsBooked == true)
+                //{
+                //    ViewBag.Message = "This surfboard is booked";
+                //    return View(booking);
+                //}
+                //else
+                //{
+                    if(User.Identity.Name != null)
+                    {
+                        //create seudo user with manager
+                        DefaultUser newUser = new DefaultUser();
+                        newUser.Email = booking.email;
+                        newUser.PhoneNumber = booking.phoneNumber;
+                        _userManager.CreateAsync(newUser);
+                    }
                     _context.Add(booking);
                     booking.BoardId = id;
                     string userName = User.Identity.Name;
@@ -132,95 +86,15 @@ namespace SurfBoardWeb.Controllers
                     }
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
-                }
+                //}
             }
-            ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
-            return View(booking);
+            return BadRequest(ModelState);
+            //ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
+            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
+            //return View(booking);
         }
 
-		// GET: Bookings/Edit/5
-		public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Bookings == null)
-            {
-                return NotFound();
-            }
-
-            var booking = await _context.Bookings.AsNoTracking().FirstOrDefaultAsync(i => i.BookingsId == id);
-            if (booking == null)
-            {
-                return NotFound();
-            }
-            return View(booking);
-        }
-
-        // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StartDate,EndDate,UserId,UserName,SurfboardId")] byte[] rowVersion)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bookingToUpdate = await _context.Bookings.FirstOrDefaultAsync(i => i.BookingsId == id);
-            if (bookingToUpdate == null)
-            {
-                Bookings deletedBooking = new Bookings();
-                await TryUpdateModelAsync(deletedBooking);
-                ModelState.AddModelError(string.Empty, "Unable to save changes. The booking was deleted by another user.");
-                ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Username", deletedBooking.BookingsId);
-                return View(deletedBooking);
-            }
-            _context.Entry(bookingToUpdate).Property("RowVersion").OriginalValue = rowVersion;
-            if (await TryUpdateModelAsync<Bookings>(bookingToUpdate, "", s => s.StartDate, s => s.EndDate, s => s.BoardId))
-            {
-                try
-                {
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    var exceptionEntry = ex.Entries.Single();
-                    var clientValues = (Bookings)exceptionEntry.Entity;
-                    var databaseEntry = exceptionEntry.GetDatabaseValues();
-                    if (databaseEntry == null)
-                    {
-                        ModelState.AddModelError(string.Empty, "Unable to save changes. The surfboard was deleted by another user.");
-                    }
-                    else
-                    {
-                        var databaseValues = (Bookings)databaseEntry.ToObject();
-                        if (databaseValues.StartDate != clientValues.StartDate)
-                        {
-                            ModelState.AddModelError("Bookings Start Date", $"Current value: {databaseValues.StartDate}");
-                        }
-                        if (databaseValues.EndDate != clientValues.EndDate)
-                        {
-                            ModelState.AddModelError("Bookings End Date", $"Current value: {databaseValues.EndDate}");
-                        }
-                        if (databaseValues.BoardId != clientValues.BoardId)
-                        {
-                            ModelState.AddModelError("Surfboard", $"Current value: {databaseValues.BoardId}");
-                        }
-                        
-
-                        ModelState.AddModelError(string.Empty, "The record you attempted to edit "
-                            + "was modified by another user after you got the original value. The"
-                            + "edit operation was canceled and the current values in the database "
-                            + "have been displayed. If you still want to edit this record, click "
-                            + "the Save button again. Otherwise click the Back to List hyperlink.");
-                    }
-                }
-            }
-            //ViewData["Bookings"] = new SelectList(_context.Bookings, "Id", "Name", bookingToUpdate.Id);
-            return View(bookingToUpdate);
-        }
+		
 
         // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)

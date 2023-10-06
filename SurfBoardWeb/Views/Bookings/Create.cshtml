@@ -1,4 +1,4 @@
-﻿@model SurfBoardWeb.Models.Bookings
+﻿@model SurfBoardWeb.Models.ViewModels.BookingRequestVM
 
 @{
     ViewData["Title"] = "Create";
@@ -21,10 +21,22 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <input name="Id" hidden value="@ViewData["SurfboardId"]" />
-            <label>@ViewData["SurfboardId"]</label>
-            <label>@ViewData["Name"]</label>
             
+            <input asp-for="BoardId" name="BoardId" type="hidden" value="@ViewData["BoardId"]" />
+
+            @if(!User.IsInRole("PremiumUser") && !User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="email" class="control-label"></label>
+                    <input asp-for="email" class="form-control" />
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="phoneNumber" class="control-label"></label>
+                    <input asp-for="phoneNumber" class="form-control" />
+                    <span asp-validation-for="phoneNumber" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
                 <input asp-for="StartDate" class="form-control" />
@@ -36,11 +48,7 @@
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="UserId" />
-            <input type="hidden" asp-for="BoardId" />
-            @*<div class="form-group">
-                <label hidden asp-for="UserName" class="control-label"></label>
-                <select hidden asp-for="UserName" class="form-control" asp-items="ViewBag.UserName"></select>
-            </div>*@
+            @*<input type="hidden" asp-for="BoardId" />*@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
