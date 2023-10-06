@@ -1,3 +1,4 @@
+using SurfBoardWeb.Data.SeedData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardWeb.Data;
@@ -24,6 +25,14 @@ if (!app.Environment.IsDevelopment())
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 	app.UseHsts();
 }
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+   SeedData.Initialize(services);
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var roleM = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -82,3 +91,4 @@ app.UseAuthorization();
 app.UseRequestLocalization("da-FR");
 
 app.Run();
+

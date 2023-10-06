@@ -218,7 +218,7 @@ namespace SurfBoardWeb.Controllers
             if (await TryUpdateModelAsync<Board>(
                 BoardToUpdate,
                 "",
-                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath))
+                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath, s => s.IsBooked))
             {
                 try
                 {
@@ -275,6 +275,7 @@ namespace SurfBoardWeb.Controllers
                         {
                             ModelState.AddModelError("PicturePath", $"Current value: {databaseValues.PicturePath}");
                         }
+
 
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
                                 + "was modified by another user after you got the original value. The "
