@@ -9,5 +9,6 @@ namespace SurfBoardWeb.Models
         public SelectList? Types { get; set; }
         public string? BoardType { get; set; }
         public string? SearchString { get; set; }
+
     }
 }
