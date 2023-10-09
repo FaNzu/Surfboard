@@ -154,6 +154,7 @@ namespace SurfBoardWeb.Controllers
             return View(board);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Boards/Create
         public IActionResult Create()
         {
