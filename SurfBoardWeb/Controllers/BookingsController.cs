@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using SurfBoardWeb.Data;
 using SurfBoardWeb.Models;
 using SurfBoardWeb.Models.ViewModels;
+using static System.Net.WebRequestMethods;
 
 namespace SurfBoardWeb.Controllers
 {
@@ -16,15 +18,17 @@ namespace SurfBoardWeb.Controllers
     {
         private readonly SurfBoardWebContext _context;
         private readonly UserManager<DefaultUser> _userManager;
+		private readonly HttpClient _httpClient;
 
-        public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
+		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager, HttpClient httpClient)
+		{
+			_context = context;
+			_userManager = userManager;
+			_httpClient = httpClient;
+		}
 
-        // GET: Bookings
-        public async Task<IActionResult> Index()
+		// GET: Bookings
+		public async Task<IActionResult> Index()
         {
             var surfBoardWebContext = _context.Bookings.Include(b => b.UserId);
             return View(await surfBoardWebContext.ToListAsync());
@@ -48,6 +52,7 @@ namespace SurfBoardWeb.Controllers
             //booking.BoardId = id;
             if (ModelState.IsValid)
             {
+                Bookings createdBooking;
 
                 if (User.Identity.Name == null)
                 {
@@ -56,29 +61,31 @@ namespace SurfBoardWeb.Controllers
                     newUser.Email = booking.email;
                     newUser.PhoneNumber = booking.phoneNumber;
                     await _userManager.CreateAsync(newUser);
-
-
-
                     //kald light version api
+                    createdBooking = await _httpClient.GetFromJsonAsync<Bookings>(@"");
+                    //ændre til rigtig 
+
+
                 }
-                Bookings createdBooking = new Bookings();
 
-                createdBooking.StartDate = booking.StartDate;
-                createdBooking.EndDate = booking.EndDate;
-                createdBooking.UserId = booking.UserId;
-                createdBooking.BoardId = booking.BoardId;
-
-                booking.BoardId = id;
-                string userName = User.Identity.Name;
-
-                foreach (IdentityUser user in _userManager.Users)
+                else
                 {
-                    if (user.UserName == userName)
+                    //hvodan sender man info med?
+                    createdBooking = await _httpClient.GetFromJsonAsync<Bookings>(@"");
+
+                    string userName = User.Identity.Name;
+
+                    foreach (IdentityUser user in _userManager.Users)
                     {
-						createdBooking.UserId = user.Id;
-                        break;
+                        if (user.UserName == userName)
+                        {
+						    createdBooking.UserId = user.Id;
+                            break;
+                        }
                     }
                 }
+
+                //ændre board til at være booket
                 foreach (Board surfboard in _context.Board)
                 {
                     if (booking.BoardId == surfboard.BoardId)
@@ -87,15 +94,11 @@ namespace SurfBoardWeb.Controllers
                         break;
                     }
                 }
-                _context.Add(createdBooking);
-                await _context.SaveChangesAsync();
+                
                 return Redirect("/Boards");
-                //}
             }
+
             return BadRequest(ModelState);
-            //ViewData["SurfboardId"] = new SelectList(_context.Board, "Id", "Name", booking.BoardId);
-            //ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", booking.UserId);
-            //return View(booking);
         }
 
 
