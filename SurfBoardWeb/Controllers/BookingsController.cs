@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +19,14 @@ namespace SurfBoardWeb.Controllers
         private readonly SurfBoardWebContext _context;
         private readonly UserManager<DefaultUser> _userManager;
 		private readonly HttpClient _httpClient;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager, HttpClient httpClient)
+		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager, HttpClient httpClient, RoleManager<IdentityRole> roleManager )
 		{
 			_context = context;
 			_userManager = userManager;
 			_httpClient = httpClient;
+            _roleManager = roleManager;
 		}
 
 		// GET: Bookings
@@ -62,8 +63,29 @@ namespace SurfBoardWeb.Controllers
                         //create seudo user with manager
                         DefaultUser newUser = new DefaultUser();
                         newUser.Email = booking.email;
+                        newUser.UserName = booking.email;
                         newUser.PhoneNumber = booking.phoneNumber;
-                        await _userManager.CreateAsync(newUser);
+                        var result = await _userManager.CreateAsync(newUser);
+
+                        if (result.Succeeded)
+                        {
+                            var roleName = "User";
+
+                            var role = await _roleManager.FindByNameAsync(roleName);
+                            if (role != null)
+                            {
+                                var addToRollR = await _userManager.AddToRoleAsync(newUser, roleName);
+
+                                if (!addToRollR.Succeeded)
+                                {
+                                    foreach (var error in addToRollR.Errors)
+                                    {
+                                        ModelState.AddModelError(string.Empty, error.Description);
+                                    }
+                                    return BadRequest();
+                                }
+                            }
+                        }
                     }
                     catch
                     {
@@ -71,7 +93,7 @@ namespace SurfBoardWeb.Controllers
                     }
 
                     //kald light version api
-                    await _httpClient.PostAsJsonAsync(@"http://localhost:????/api/v1/??", booking);
+                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1/Booking/Create", booking);
                     //ændre til rigtig 
 
                     //sæt user id
@@ -90,7 +112,7 @@ namespace SurfBoardWeb.Controllers
                         }
                     }
                     //api v2 
-                    await _httpClient.PostAsJsonAsync(@"http://localhost:???/api/v2/??", booking);
+                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v2/Booking/Create", booking);
                 }
 
                 //ændre board til at være booket

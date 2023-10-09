@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using SurfBoardWeb.Models;
 using SurfBoardWeb.Models.SeedData;
 
+HttpClient httpClient = new();
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfBoardWebContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
@@ -12,9 +15,9 @@ builder.Services.AddDbContext<SurfBoardWebContext>(options =>
 builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<SurfBoardWebContext>();
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton(typeof(HttpClient), httpClient);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -75,7 +78,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication(); ;
-
 
 
 
