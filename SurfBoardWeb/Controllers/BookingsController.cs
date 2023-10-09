@@ -49,13 +49,17 @@ namespace SurfBoardWeb.Controllers
             if (ModelState.IsValid)
             {
 
-                if (User.Identity.Name != null)
+                if (User.Identity.Name == null)
                 {
                     //create seudo user with manager
                     DefaultUser newUser = new DefaultUser();
                     newUser.Email = booking.email;
                     newUser.PhoneNumber = booking.phoneNumber;
-                    _userManager.CreateAsync(newUser);
+                    await _userManager.CreateAsync(newUser);
+
+
+
+                    //kald light version api
                 }
                 Bookings createdBooking = new Bookings();
 

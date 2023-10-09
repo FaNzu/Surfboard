@@ -34,6 +34,10 @@ namespace SurfboardApi.Controllers.v1
         [HttpGet("GetBookings"), ActionName("GetBookings")]
         public async Task<IActionResult> GetBooking(bool premiumUser)
         {
+            if (premiumUser)
+            {
+                return BadRequest("You dont have access");
+            }
             var resultbooking = _context.Bookings;
 
             if (resultbooking == null)
@@ -48,7 +52,7 @@ namespace SurfboardApi.Controllers.v1
         [HttpPost("Create"), ActionName("PostBooking")]
         public async Task<IActionResult> CreateBooking(BookingRequestVM bookings, bool premiumUser) //booking request viewmodel
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && !premiumUser)
             {
                 bool boardexists = false;
                 foreach (Board board in _context.Board)

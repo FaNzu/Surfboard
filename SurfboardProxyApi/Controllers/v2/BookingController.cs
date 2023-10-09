@@ -69,7 +69,7 @@ namespace SurfboardApi.Controllers.v2
 		[HttpPost("Create") , ActionName("PostBooking")]
         public async Task<IActionResult> CreateBooking(BookingRequestVM bookings, bool premiumUser) //booking request viewmodel
         {
-            if (ModelState.IsValid && !premiumUser) // hvis bookings ikke er gyldig eller bruger ikke premium
+            if (ModelState.IsValid && premiumUser) // hvis bookings ikke er gyldig eller er premium
             {
                 bool boardexists = false;
                 foreach (Board board in _context.Board)
@@ -81,7 +81,7 @@ namespace SurfboardApi.Controllers.v2
                         break;
                     }
                 }
-                if (!boardexists) { return BadRequest("Board not found with the specified BoardId."); }
+                if (!boardexists) { return BadRequest("Board not found with the specified productnumber."); }
 
 
                 try
