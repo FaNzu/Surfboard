@@ -49,7 +49,7 @@ namespace SurfBoardWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StartDate,EndDate,UserId,BoardId,email,phoneNumber")] BookingRequestVM booking, int id) //Ændre alt til BookingRequestVM requestedVM
+        public async Task<IActionResult> Create([Bind("StartDate,EndDate,UserId,BoardId,email,phoneNumber")] BookingRequestVM booking) //Ændre alt til BookingRequestVM requestedVM
         {
             //booking.BoardId = id;
             if (ModelState.IsValid)
@@ -93,7 +93,8 @@ namespace SurfBoardWeb.Controllers
                     }
 
                     //kald light version api
-                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1/Booking/Create", booking);
+                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1.0/Booking/Create", booking);
+
                     //ændre til rigtig 
 
                     //sæt user id
@@ -112,7 +113,7 @@ namespace SurfBoardWeb.Controllers
                         }
                     }
                     //api v2 
-                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v2/Booking/Create", booking);
+                    await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v2.0/Booking/Create", booking);
                 }
 
                 //ændre board til at være booket
