@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -161,6 +163,7 @@ namespace SurfBoardWeb.Controllers
         // POST: Boards/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,PicturePath")] Board board)
@@ -175,6 +178,7 @@ namespace SurfBoardWeb.Controllers
         }
 
         // GET: Boards/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Board == null)
@@ -193,6 +197,7 @@ namespace SurfBoardWeb.Controllers
         // POST: Boards/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
@@ -289,8 +294,8 @@ namespace SurfBoardWeb.Controllers
             }
             return View(BoardToUpdate);
         }
-        
 
+        [Authorize(Roles = "Admin")]
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
@@ -325,6 +330,7 @@ namespace SurfBoardWeb.Controllers
         }
 
         // POST: Boards/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
