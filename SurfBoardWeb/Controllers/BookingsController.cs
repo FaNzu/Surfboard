@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -56,33 +57,40 @@ namespace SurfBoardWeb.Controllers
 
                 if (User.Identity.Name == null)
                 {
-                    //create seudo user with manager
-                    DefaultUser newUser = new DefaultUser();
-                    newUser.Email = booking.email;
-                    newUser.PhoneNumber = booking.phoneNumber;
-                    await _userManager.CreateAsync(newUser);
+                    try
+                    {
+                        //create seudo user with manager
+                        DefaultUser newUser = new DefaultUser();
+                        newUser.Email = booking.email;
+                        newUser.PhoneNumber = booking.phoneNumber;
+                        await _userManager.CreateAsync(newUser);
+                    }
+                    catch
+                    {
+                        return BadRequest("failed to save user info");
+                    }
+
                     //kald light version api
-                    createdBooking = await _httpClient.GetFromJsonAsync<Bookings>(@"");
+                    await _httpClient.PostAsJsonAsync(@"http://localhost:????/api/v1/??", booking);
                     //ændre til rigtig 
 
-
+                    //sæt user id
                 }
 
                 else
                 {
-                    //hvodan sender man info med?
-                    createdBooking = await _httpClient.GetFromJsonAsync<Bookings>(@"");
-
                     string userName = User.Identity.Name;
 
                     foreach (IdentityUser user in _userManager.Users)
                     {
                         if (user.UserName == userName)
                         {
-						    createdBooking.UserId = user.Id;
+						    booking.UserId = user.Id;
                             break;
                         }
                     }
+                    //api v2 
+                    await _httpClient.PostAsJsonAsync(@"http://localhost:???/api/v2/??", booking);
                 }
 
                 //ændre board til at være booket

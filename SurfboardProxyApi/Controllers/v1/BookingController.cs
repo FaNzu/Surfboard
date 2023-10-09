@@ -50,9 +50,9 @@ namespace SurfboardApi.Controllers.v1
 
 
         [HttpPost("Create"), ActionName("PostBooking")]
-        public async Task<IActionResult> CreateBooking(BookingRequestVM bookings, bool premiumUser) //booking request viewmodel
+        public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
         {
-            if (ModelState.IsValid && !premiumUser)
+            if (ModelState.IsValid)
             {
                 bool boardexists = false;
                 foreach (Board board in _context.Board)
