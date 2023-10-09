@@ -34,17 +34,13 @@ namespace SurfboardApi.Controllers.v2
 
         [HttpGet("GetBookings"), ActionName("GetBookings")]
         [MapToApiVersion("2.0")]
-        public async Task<IActionResult> GetBooking(bool premiumUser)
+        public async Task<IActionResult> GetBooking()
         {
             var resultbooking = _context.Bookings;
 
             if (resultbooking == null)
             {
                 return NotFound();
-            }
-            if (!premiumUser) //sikkerheds tjek i database burde bruges. men ikke nødvendigt i minimal viable produkt
-            {
-                return BadRequest("User not authanticated"); 
             }
 
             return Ok(await resultbooking.ToListAsync());
@@ -67,9 +63,9 @@ namespace SurfboardApi.Controllers.v2
 
 
 		[HttpPost("Create") , ActionName("PostBooking")]
-        public async Task<IActionResult> CreateBooking(BookingRequestVM bookings, bool premiumUser) //booking request viewmodel
+        public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
         {
-            if (ModelState.IsValid && premiumUser) // hvis bookings ikke er gyldig eller er premium
+            if (ModelState.IsValid) // hvis bookings ikke er gyldig eller er premium
             {
                 bool boardexists = false;
                 foreach (Board board in _context.Board)

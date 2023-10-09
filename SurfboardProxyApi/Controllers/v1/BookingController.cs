@@ -32,12 +32,8 @@ namespace SurfboardApi.Controllers.v1
 
 
         [HttpGet("GetBookings"), ActionName("GetBookings")]
-        public async Task<IActionResult> GetBooking(bool premiumUser)
+        public async Task<IActionResult> GetBooking()
         {
-            if (premiumUser)
-            {
-                return BadRequest("You dont have access");
-            }
             var resultbooking = _context.Bookings;
 
             if (resultbooking == null)
