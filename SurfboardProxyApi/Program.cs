@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SurfboardApi.Data;
 
 namespace SurfboardApi
@@ -20,7 +22,19 @@ namespace SurfboardApi
 
             HttpClient httpClient = new();
             builder.Services.AddSingleton(typeof(HttpClient), httpClient);
+            builder.Services.AddApiVersioning(Options =>
+            {
+                Options.AssumeDefaultVersionWhenUnspecified = true;
+                Options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+                Options.ReportApiVersions = true;
+                Options.ApiVersionReader = ApiVersionReader.Combine(new HeaderApiVersionReader("x-version"));
+            });
 
+            builder.Services.AddVersionedApiExplorer(Options =>
+            {
+                Options.GroupNameFormat = "'v'VVV";
+                Options.SubstituteApiVersionInUrl = true;
+            });
 
             var app = builder.Build();
 

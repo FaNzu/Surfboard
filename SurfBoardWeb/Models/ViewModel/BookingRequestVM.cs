@@ -12,5 +12,7 @@ namespace SurfBoardWeb.Models.ViewModels
 
         public int BoardId { get; set; }
 
+        public string? email { get; set; }
+        public string? phoneNumber { get; set; }
     }
 }

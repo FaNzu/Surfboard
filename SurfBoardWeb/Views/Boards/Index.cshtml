@@ -2,121 +2,178 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 @{
-    ViewData["Title"] = "Index";
+	ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
 @if (User.IsInRole("Admin"))
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+	<p>
+		<a asp-action="Create">Create New</a>
+	</p>
 }
 <form asp-controller="Boards" asp-action="Index" method="get">
-    <p>
-        Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-        <input type="submit" value="Søg" class="btn btn-default" /> |
-        <a asp-action="Index">Stop Søgning</a>
-    </p>
+	<p>
+		Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+		<input type="submit" value="Søg" class="btn btn-default" /> |
+		<a asp-action="Index">Stop Søgning</a>
+	</p>
 </form>
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["LengthSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Length</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["WidthSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Width</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["ThicknessSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Thickness</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["VolumeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Volume</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Type</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Price</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["EquipmentSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Equipment</a>
-            </th>
-            <th>
-                billede
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Length)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Width)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Thickness)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Volume)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Equipment)
-                </td>
-                <td>
-                    <img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
-                </td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.BoardId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.BoardId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.BoardId">Delete</a>
-                    </td>
-                }
-                @if (User.IsInRole("User"))
-                {
-                    <td>
-                        <a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
-                    </td>
-                }
-            </tr>
-        }
-    </tbody>
+	<thead>
+		<tr>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["LengthSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Length</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["WidthSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Width</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["ThicknessSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Thickness</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["VolumeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Volume</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["TypeSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Type</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Price</a>
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["EquipmentSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Equipment</a>
+			</th>
+			<th>
+				billede
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+
+			@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("PremiumUser")))
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Name)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Length)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Width)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Thickness)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Volume)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Type)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Price)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Equipment)
+					</td>
+					<td>
+						<img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
+					</td>
+					@if (User.IsInRole("Admin"))
+					{
+						<td>
+							<a asp-action="Edit" asp-route-id="@item.BoardId">Edit</a> |
+							<a asp-action="Details" asp-route-id="@item.BoardId">Details</a> |
+							<a asp-action="Delete" asp-route-id="@item.BoardId">Delete</a>
+						</td>
+					}
+					else if (item.IsBooked == false)
+					{
+						@*lav if hvis board er booked, ik hvis*@
+						<td>
+							<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
+						</td>
+					}
+				</tr>
+			}
+			else if (!User.Identity.IsAuthenticated && item.BoardId % 2 == 0)
+			{
+				if (item.IsBooked == false)
+				{
+
+					<tr>
+						<td>
+							@Html.DisplayFor(modelItem => item.Name)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Length)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Width)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Thickness)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Volume)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Type)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Price)
+						</td>
+						<td>
+							@Html.DisplayFor(modelItem => item.Equipment)
+						</td>
+						<td>
+							<img src="@Html.DisplayFor(modelItem => item.PicturePath)" height="40" class="hoverImage">
+						</td>
+						@if (User.IsInRole("Admin"))
+						{
+							<td>
+								<a asp-action="Edit" asp-route-id="@item.BoardId">Edit</a> |
+								<a asp-action="Details" asp-route-id="@item.BoardId">Details</a> |
+								<a asp-action="Delete" asp-route-id="@item.BoardId">Delete</a>
+							</td>
+						}
+						else
+						{
+							@*lav if hvis board er booked, ik hvis*@
+							<td>
+								<a asp-controller="Bookings" asp-route-id="@item.BoardId" asp-action="Create">Book board</a>
+							</td>
+						}
+					</tr>
+				}
+			}
+
+		}
+	</tbody>
 </table>
 @{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+	var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
-    Previous
+	Previous
 </a>
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
-    Next
+	Next
 </a>

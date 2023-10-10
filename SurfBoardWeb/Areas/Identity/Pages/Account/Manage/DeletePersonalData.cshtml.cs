@@ -3,12 +3,14 @@
 #nullable disable
 
 using System;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SurfBoardWeb.Data;
 using SurfBoardWeb.Models;
 
 namespace SurfBoardWeb.Areas.Identity.Pages.Account.Manage
@@ -18,15 +20,18 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<DefaultUser> _userManager;
         private readonly SignInManager<DefaultUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly SurfBoardWebContext _context;
 
         public DeletePersonalDataModel(
             UserManager<DefaultUser> userManager,
             SignInManager<DefaultUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            SurfBoardWebContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         /// <summary>
@@ -86,9 +91,24 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
+            var userId = await _userManager.GetUserIdAsync(user);
+            IList<Bookings> bookingsList = _context.Bookings.ToList();
+            //deleting user booking when deleting acc
+            foreach (Bookings booking in bookingsList)
+            {
+                lock (this)
+                {
+                    if (booking.UserId == userId)
+                    {
+					    var board = _context.Board.First(a => a.BoardId == booking.BoardId);
+					    board.IsBooked = false;
+                        _context.Bookings.Remove(booking);
+				    }
+                    _context.SaveChanges();
+                }
+            }
 
             var result = await _userManager.DeleteAsync(user);
-            var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");

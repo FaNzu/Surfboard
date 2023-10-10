@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -43,8 +45,25 @@ namespace SurfBoardWeb.Controllers
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
                                             select m.Type;
-            var boards = from m in _context.Board
-                         select m;
+
+
+			IQueryable<Board> boards;
+
+			if (User.Identity.IsAuthenticated)
+			{
+				boards = from m in _context.Board
+						 select m;
+			}
+			else
+			{
+				boards = from m in _context.Board
+						 where m.BoardId % 2 == 0
+						 select m;
+			}
+
+			//var boards = from m in _context.Board
+   //                      select m;
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -152,6 +171,7 @@ namespace SurfBoardWeb.Controllers
             return View(board);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Boards/Create
         public IActionResult Create()
         {
@@ -161,6 +181,7 @@ namespace SurfBoardWeb.Controllers
         // POST: Boards/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment,PicturePath")] Board board)
@@ -175,6 +196,7 @@ namespace SurfBoardWeb.Controllers
         }
 
         // GET: Boards/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Board == null)
@@ -193,6 +215,7 @@ namespace SurfBoardWeb.Controllers
         // POST: Boards/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, byte[] rowVersion)
@@ -218,7 +241,7 @@ namespace SurfBoardWeb.Controllers
             if (await TryUpdateModelAsync<Board>(
                 BoardToUpdate,
                 "",
-                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath))
+                s => s.Name, s => s.Length, s => s.Width, s => s.Thickness, s => s.Volume, s => s.Type, s => s.Price, s => s.RowVersion, s=>s.Equipment, s => s.PicturePath, s => s.IsBooked))
             {
                 try
                 {
@@ -276,6 +299,7 @@ namespace SurfBoardWeb.Controllers
                             ModelState.AddModelError("PicturePath", $"Current value: {databaseValues.PicturePath}");
                         }
 
+
                         ModelState.AddModelError(string.Empty, "The record you attempted to edit "
                                 + "was modified by another user after you got the original value. The "
                                 + "edit operation was canceled and the current values in the database "
@@ -288,8 +312,8 @@ namespace SurfBoardWeb.Controllers
             }
             return View(BoardToUpdate);
         }
-        
 
+        [Authorize(Roles = "Admin")]
         // GET: Boards/Delete/5
         public async Task<IActionResult> Delete(int? id, bool? concurrencyError)
         {
@@ -324,6 +348,7 @@ namespace SurfBoardWeb.Controllers
         }
 
         // POST: Boards/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

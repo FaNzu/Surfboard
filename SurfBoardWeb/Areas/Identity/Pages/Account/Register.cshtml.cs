@@ -120,14 +120,14 @@ namespace SurfBoardWeb.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user,  Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    var roleName = "User";
+                    var roleName = "PremiumUser";
                     var role = await _roleManager.FindByNameAsync(roleName);
                     if (role != null)
                     {
