@@ -50,22 +50,9 @@ namespace SurfboardApi.Controllers.v1
         {
             if (ModelState.IsValid) // hvis bookings ikke er gyldig eller er premium
             {
-                bool boardexists = false;
-                foreach (Board board in _context.Board)
-                {
-                    if (bookings.BoardId == board.BoardId)
-                    {
-                        board.IsBooked = true;
-                        boardexists = true;
-                        break;
-                    }
-                }
-                if (!boardexists) { return BadRequest("Board not found with the specified productnumber."); }
-
-
                 try
                 {
-                    Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate, bookings.BoardId);
+                    Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate,bookings.UserId, bookings.BoardId);
                     _context.Bookings.Add(booking);
                     await _context.SaveChangesAsync();
                     return Ok(new { Message = "Booking created" });

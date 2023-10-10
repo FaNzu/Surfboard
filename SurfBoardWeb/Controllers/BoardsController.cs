@@ -45,6 +45,8 @@ namespace SurfBoardWeb.Controllers
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
                                             select m.Type;
+            
+
             var boards = from m in _context.Board
                          select m;
             switch (sortOrder)

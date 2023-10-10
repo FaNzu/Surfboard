@@ -16,18 +16,11 @@ namespace SurfboardApi.Models
             BoardId = _boardId;
             BookingsId = 0;
         }
-        public Bookings(DateTime _startDate, DateTime _endDate, int _boardId)
-        {
-            StartDate = _startDate;
-            EndDate = _endDate;
-            BoardId = _boardId;
-            BookingsId = 0;
-        }
 
         public int BookingsId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
         public int BoardId { get; set; }
 
     }
