@@ -45,10 +45,25 @@ namespace SurfBoardWeb.Controllers
             IQueryable<string> genreQuery = from m in _context.Board
                                             orderby m.Type
                                             select m.Type;
-            
 
-            var boards = from m in _context.Board
-                         select m;
+
+			IQueryable<Board> boards;
+
+			if (User.Identity.IsAuthenticated)
+			{
+				boards = from m in _context.Board
+						 select m;
+			}
+			else
+			{
+				boards = from m in _context.Board
+						 where m.BoardId % 2 == 0
+						 select m;
+			}
+
+			//var boards = from m in _context.Board
+   //                      select m;
+
             switch (sortOrder)
             {
                 case "name_desc":
