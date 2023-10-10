@@ -30,7 +30,7 @@ namespace SurfboardApi.Controllers.v1
         }
         #endregion
 
-
+        #region GET - Bookings
         [HttpGet("GetBookings"), ActionName("GetBookings")]
         public async Task<IActionResult> GetBooking()
         {
@@ -43,7 +43,7 @@ namespace SurfboardApi.Controllers.v1
 
             return Ok(await resultbooking.ToListAsync());
         }
-
+        #endregion
 
         [HttpPost("Create"), ActionName("PostBooking")]
         public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
@@ -65,8 +65,8 @@ namespace SurfboardApi.Controllers.v1
 
                 try
                 {
-                    Bookings bookingstest = new Bookings(bookings.StartDate, bookings.EndDate, bookings.UserId, bookings.BoardId);
-                    _context.Bookings.Add(bookingstest);
+                    Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate, bookings.BoardId);
+                    _context.Bookings.Add(booking);
                     await _context.SaveChangesAsync();
                     return Ok(new { Message = "Booking created" });
                 }

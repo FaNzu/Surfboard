@@ -31,7 +31,7 @@ namespace SurfboardApi.Controllers.v2
         }
         #endregion
 
-
+        #region GET - Bookings
         [HttpGet("GetBookings"), ActionName("GetBookings")]
         [MapToApiVersion("2.0")]
         public async Task<IActionResult> GetBooking()
@@ -45,24 +45,10 @@ namespace SurfboardApi.Controllers.v2
 
             return Ok(await resultbooking.ToListAsync());
         }
+        #endregion
 
-
-		//[HttpGet("GetBookings"), ActionName("GetBookings")]
-        //[MapToApiVersion("2.1")]
-        //public async Task<IActionResult> GetBookingV21()
-		//{
-		//	var resultbooking = _context.Bookings;
-
-		//	if (resultbooking == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	return Ok(await resultbooking.ToListAsync());
-		//}
-
-
-		[HttpPost("Create") , ActionName("PostBooking")]
+        #region POST - CREATE Booking
+        [HttpPost("Create") , ActionName("PostBooking")]
         public async Task<IActionResult> CreateBooking(BookingRequestVM bookings) //booking request viewmodel
         {
             if (ModelState.IsValid) // hvis bookings ikke er gyldig eller er premium
@@ -94,5 +80,6 @@ namespace SurfboardApi.Controllers.v2
             }
             return BadRequest(new { Message = "Booking not created or user not authanticated" });
         }
+        #endregion
     }
 }

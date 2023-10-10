@@ -18,19 +18,19 @@ namespace SurfBoardWeb.Controllers
     {
         private readonly SurfBoardWebContext _context;
         private readonly UserManager<DefaultUser> _userManager;
-		private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-		public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager, HttpClient httpClient, RoleManager<IdentityRole> roleManager )
-		{
-			_context = context;
-			_userManager = userManager;
-			_httpClient = httpClient;
+        public BookingsController(SurfBoardWebContext context, UserManager<DefaultUser> userManager, HttpClient httpClient, RoleManager<IdentityRole> roleManager)
+        {
+            _context = context;
+            _userManager = userManager;
+            _httpClient = httpClient;
             _roleManager = roleManager;
-		}
+        }
 
-		// GET: Bookings
-		public async Task<IActionResult> Index()
+        // GET: Bookings
+        public async Task<IActionResult> Index()
         {
             var surfBoardWebContext = _context.Bookings.Include(b => b.UserId);
             return View(await surfBoardWebContext.ToListAsync());
@@ -54,13 +54,11 @@ namespace SurfBoardWeb.Controllers
             //booking.BoardId = id;
             if (ModelState.IsValid)
             {
-                Bookings createdBooking;
-
                 if (User.Identity.Name == null)
                 {
+                    #region CREATES SEUDO USER
                     try
                     {
-                        //create seudo user with manager
                         DefaultUser newUser = new DefaultUser();
                         newUser.Email = booking.email;
                         newUser.UserName = booking.email;
@@ -91,13 +89,9 @@ namespace SurfBoardWeb.Controllers
                     {
                         return BadRequest("failed to save user info");
                     }
+                    #endregion
 
-                    //kald light version api
                     await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1.0/Booking/Create", booking);
-
-                    //ændre til rigtig 
-
-                    //sæt user id
                 }
 
                 else
@@ -108,11 +102,10 @@ namespace SurfBoardWeb.Controllers
                     {
                         if (user.UserName == userName)
                         {
-						    booking.UserId = user.Id;
+                            booking.UserId = user.Id;
                             break;
                         }
                     }
-                    //api v2 
                     await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v2.0/Booking/Create", booking);
                 }
 
@@ -125,7 +118,7 @@ namespace SurfBoardWeb.Controllers
                         break;
                     }
                 }
-                
+
                 return Redirect("/Boards");
             }
 

@@ -9,7 +9,7 @@ namespace SurfboardApi.Models.ViewModels
 
         public DateTime EndDate { get; set; }
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         public int BoardId { get; set; }
 
