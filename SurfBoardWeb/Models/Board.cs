@@ -48,8 +48,5 @@ namespace SurfBoardWeb.Models
         public string? PicturePath { get; set; }
 
         public bool IsBooked { get; set; }
-        public ICollection<Bookings> Bookings { get; set; }
-
-
     }
 }
