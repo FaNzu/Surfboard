@@ -50,8 +50,15 @@ namespace SurfboardApi.Controllers.v1
         {
             if (ModelState.IsValid) // hvis bookings ikke er gyldig eller er premium
             {
-                try
-                {
+
+				//check om userid har bookings aktive
+				//return fejl
+
+				//ellers fotsæt
+
+
+				try
+				{
                     Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate,bookings.UserId, bookings.BoardId);
                     _context.Bookings.Add(booking);
                     await _context.SaveChangesAsync();
