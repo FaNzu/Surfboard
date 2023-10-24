@@ -46,7 +46,6 @@ namespace SurfBoardWeb.Controllers
                                             orderby m.Type
                                             select m.Type;
 
-
 			IQueryable<Board> boards;
 
 			if (User.Identity.IsAuthenticated)
@@ -61,10 +60,7 @@ namespace SurfBoardWeb.Controllers
 						 select m;
 			}
 
-			//var boards = from m in _context.Board
-   //                      select m;
-
-            switch (sortOrder)
+			switch (sortOrder)
             {
                 case "name_desc":
                     boards = boards.OrderByDescending(m => m.Name);
@@ -114,14 +110,12 @@ namespace SurfBoardWeb.Controllers
                 default:
                     boards = boards.OrderBy(m => m.Name);
                     break;
-            }
+            } //board orderby
             if (!string.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(model => model.Name!.Contains(searchString)
                         || model.Equipment!.Contains(searchString)
                         || model.Type!.Contains(searchString));
-
-                // tilføj mere søgefunktioner
             }
 
             if (!string.IsNullOrEmpty(BoardType))
@@ -133,6 +127,7 @@ namespace SurfBoardWeb.Controllers
             {
                 pageNumber = 1;
             }
+
             else
             {
                 searchString = currentFilter;
@@ -149,8 +144,6 @@ namespace SurfBoardWeb.Controllers
 
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
-
-            //return View(BoardTypeVM);
         }
 
         // GET: Boards/Details/5
@@ -171,16 +164,14 @@ namespace SurfBoardWeb.Controllers
             return View(board);
         }
 
-        [Authorize(Roles = "Admin")]
         // GET: Boards/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Boards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
