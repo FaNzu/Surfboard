@@ -93,9 +93,15 @@ namespace SurfBoardWeb.Controllers
 					{
 						return BadRequest("failed to save user info");
 					}
-					#endregion
+                    #endregion
 
-					await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1.0/Booking/Create", booking);
+                    var response = await _httpClient.PostAsJsonAsync(@"https://localhost:7163/api/v1.0/Booking/Create", booking);
+					bool returnValue = response.IsSuccessStatusCode;
+					if(returnValue == false)
+					{
+						return BadRequest("You can only rent 1 board when you are not logged in");
+					}
+					
 				}
 
 				else
