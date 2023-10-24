@@ -12,8 +12,8 @@ using SurfBoardWeb.Data;
 namespace SurfBoardWeb.Migrations
 {
     [DbContext(typeof(SurfBoardWebContext))]
-    [Migration("20231005104829_test12312421")]
-    partial class test12312421
+    [Migration("20231024074839_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
