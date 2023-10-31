@@ -1,7 +1,8 @@
-﻿using MyBlazorShop.Libraries.Services.Product.Models;
-using MyBlazorShop.Libraries.Services.Storage;
+﻿using SurfBlazorLibrary;
+using SurfBlazorLibrary.Product.Models;
+using SurfBlazorLibrary.Storage;
 
-namespace MyBlazorShop.Libraries.Services.Product
+namespace SurfBlazorLibrary.Product
 {
 
     /// <summary>

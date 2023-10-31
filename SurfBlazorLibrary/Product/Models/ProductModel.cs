@@ -1,4 +1,4 @@
-﻿namespace MyBlazorShop.Libraries.Services.Product.Models
+﻿namespace SurfBlazorLibrary.Product.Models
 {
     /// <summary>
     /// Stores a product.

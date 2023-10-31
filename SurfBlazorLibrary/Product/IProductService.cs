@@ -1,6 +1,6 @@
-﻿using MyBlazorShop.Libraries.Services.Product.Models;
+﻿using SurfBlazorLibrary.Product.Models;
 
-namespace MyBlazorShop.Libraries.Services.Product
+namespace SurfBlazorLibrary.Product
 {
     /// <summary>
     /// Used for product methods.

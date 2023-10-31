@@ -1,7 +1,7 @@
-﻿using MyBlazorShop.Libraries.Services.ShoppingCart.Models;
-using MyBlazorShop.Libraries.Services.Product.Models;
+﻿using SurfBlazorLibrary.ShoppingCart.Models;
+using SurfBlazorLibrary.Product.Models;
 
-namespace MyBlazorShop.Libraries.Services.ShoppingCart
+namespace SurfBlazorLibrary.ShoppingCart
 {
     /// <summary>
     /// Used for shopping cart methods.
