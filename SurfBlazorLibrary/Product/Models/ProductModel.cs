@@ -14,6 +14,13 @@
         /// Name of the product.
         /// </summary>
         public string Name { get; }
+        
+        public double Length { get; }
+        public double Width { get; }
+        public double Thickness { get; }
+        public double Volume { get; }
+        public string Type { get; }
+        public string? Equiment { get; }
 
         /// <summary>
         /// Price of the product.
@@ -54,10 +61,16 @@
         /// <param name="name">Name of the product.</param>
         /// <param name="price">Price of the product.</param>
         /// <param name="image">Image path of the product.</param>
-        public ProductModel(string sku, string name, decimal price, string image)
+        public ProductModel(string sku, string name, double length, double width, double thickness, double volume, string type, string equipment ,decimal price, string image)
         {
             Sku = sku;
             Name = name;
+            Length = length;
+            Width = width;
+            Thickness = thickness;
+            Volume = volume;
+            Type = type;
+            Equiment = equipment;
             Price = price;
             Image = image;
         }
