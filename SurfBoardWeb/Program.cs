@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SurfBoardWebContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardWebContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardWebContext' not found.")));
 
-builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<DefaultUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<SurfBoardWebContext>();
 builder.Services.AddControllersWithViews();
@@ -49,6 +49,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
 using (var scope = app.Services.CreateScope())
 {
     var userM = scope.ServiceProvider.GetRequiredService<UserManager<DefaultUser>>();
@@ -73,11 +74,35 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+using (var scope = app.Services.CreateScope())
+{
+	var userM = scope.ServiceProvider.GetRequiredService<UserManager<DefaultUser>>();
+
+	string email = "user@user.com";
+	string password = "user4$";
+	if (await userM.FindByEmailAsync(email) == null)
+	{
+		var user = new DefaultUser
+		{
+			UserName = email,
+			Email = email,
+			EmailConfirmed = true
+		};
+
+		var result = await userM.CreateAsync(user, password);
+
+		if (result.Succeeded)
+		{
+			await userM.AddToRoleAsync(user, "PremiumUser");
+		}
+	}
+}
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication(); ;
 
 
 
@@ -86,6 +111,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRequestLocalization("da-FR");

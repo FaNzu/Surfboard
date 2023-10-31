@@ -50,12 +50,21 @@ namespace SurfboardApi.Controllers.v1
         {
             if (ModelState.IsValid) // hvis bookings ikke er gyldig eller er premium
             {
-                //check om userid har bookings aktive
-                //return fejl
-
-                //ellers fotsæt
-                try
+                foreach (Bookings bookings1 in _context.Bookings)
                 {
+
+                    if (bookings1.UserId == bookings.UserId)
+                    {
+                        return BadRequest("You have reached you maximum amout of bookings");
+                    }
+                    //check om userid har bookings aktive
+                    //return fejl
+
+                    //ellers fotsæt
+                }
+
+				try
+				{
                     Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate,bookings.UserId, bookings.BoardId);
                     _context.Bookings.Add(booking);
                     await _context.SaveChangesAsync();

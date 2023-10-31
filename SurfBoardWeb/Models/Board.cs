@@ -39,7 +39,7 @@ namespace SurfBoardWeb.Models
 
         [DataType(DataType.Currency)]
         [Required]
-        public double Price{ get; set; }
+        public double Price{ get; set; } //bør laves til decimal
 
         [Timestamp]
         public byte[] RowVersion { get; set; }
@@ -48,8 +48,5 @@ namespace SurfBoardWeb.Models
         public string? PicturePath { get; set; }
 
         public bool IsBooked { get; set; }
-        public ICollection<Bookings> Bookings { get; set; }
-
-
     }
 }
