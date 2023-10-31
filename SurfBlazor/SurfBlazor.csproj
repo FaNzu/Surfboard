@@ -15,4 +15,8 @@
     <ProjectReference Include="..\SurfBlazorLibrary\SurfBlazorLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>
