@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace MyBlazorShop.Web.BlazorWasm.Components
+namespace SurfBlazor.Components
 {
     public abstract class PageInfoModel : ComponentBase
     {

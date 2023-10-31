@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SurfBlazor;
+using SurfBlazorLibrary.Product;
+using SurfBlazorLibrary.ShoppingCart;
+using SurfBlazorLibrary.Storage;
 
 namespace SurfBlazor
 {
@@ -13,6 +16,10 @@ namespace SurfBlazor
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            builder.Services.AddSingleton<IStorageService, StorageService>();
+            builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
+            builder.Services.AddTransient<IProductService, ProductService>();
 
             await builder.Build().RunAsync();
         }
