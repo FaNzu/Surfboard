@@ -33,7 +33,7 @@ namespace SurfBlazorLibrary.Storage
 
             //var result = _httpClient.GetFromJsonAsync<ProductModel>(@"https://localhost:7163/api/v3/Board/GetBoard");
             // Store a list of all the products for the online shop.
-            AddProduct(new ProductModel("TEST", "dsfg", 4, 4, 4, 4, "Funboard", "", 500, ""));
+            //AddProduct(new ProductModel("TEST", "dsfg", 4, 4, 4, 4, "Funboard", "", 500, ""));
             //AddProduct(new ProductModel("BUBBLES-GUMBALL-APRON", "A Gumball for Your Thoughts Apron", 24, "bubbles-gumball-apron-black.jpg"));
             //AddProduct(new ProductModel("REX-MICROCONTROLLERS-APRON", "Great Microcontrollers Think Alike Apron", 24, "rex-microcontrollers-apron-black.jpg"));
             //AddProduct(new ProductModel("DOLORES-COMPUTE-BASEBALLHAT", "I Compute, Therefore I Am Baseball Hat", 29, "dolores-compute-baseballhat-black.jpg"));
