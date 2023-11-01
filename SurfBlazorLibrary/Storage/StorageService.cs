@@ -1,13 +1,17 @@
-﻿using SurfBlazorLibrary.Product.Models;
+﻿using System.Net.Http.Json;
+using SurfBlazorLibrary.Product.Models;
 using SurfBlazorLibrary.ShoppingCart.Models;
 
 namespace SurfBlazorLibrary.Storage
 {
+
     /// <summary>
     /// Stores the data used for the application.
     /// </summary>
     public class StorageService : IStorageService
     {
+        private readonly HttpClient _httpClient;
+
         /// <summary>
         /// Stores a list of products.
         /// </summary>
@@ -23,9 +27,11 @@ namespace SurfBlazorLibrary.Storage
         /// </summary>
         public StorageService()
         {
+            //_httpClient = httpClient; //virker måske ikke
             Products = new List<ProductModel>();
             ShoppingCart = new ShoppingCartModel();
 
+            //var result = _httpClient.GetFromJsonAsync<ProductModel>(@"https://localhost:7163/api/v3/Board/GetBoard");
             // Store a list of all the products for the online shop.
             AddProduct(new ProductModel("TEST", "dsfg", 4, 4, 4, 4, "Funboard", "", 500, ""));
             //AddProduct(new ProductModel("BUBBLES-GUMBALL-APRON", "A Gumball for Your Thoughts Apron", 24, "bubbles-gumball-apron-black.jpg"));

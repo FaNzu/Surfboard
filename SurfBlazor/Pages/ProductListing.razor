@@ -31,9 +31,15 @@
     public IList<ProductModel> Products { get; set; }
 }
 @functions {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        Products = productService.GetAll();
-        base.OnInitialized();
+        HttpClient httpClient = new HttpClient();
+        Products = await httpClient.GetFromJsonAsync<List<ProductModel>>(@"https://localhost:7163/api/v3/Board/GetBoard");
+
+        if (Products == null)
+        {
+            Products = productService.GetAll();
+        }
+        await base.OnInitializedAsync();
     }
 }
