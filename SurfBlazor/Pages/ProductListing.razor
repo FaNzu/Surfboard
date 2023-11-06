@@ -1,8 +1,10 @@
 ﻿@using SurfBlazor.Shared
 @using SurfBlazorLibrary.Product
 @using SurfBlazorLibrary.Product.Models
+@using SurfBlazorLibrary.Storage
 @page "/"
 @inject IProductService productService
+@inject IStorageService storageService
 <PageTitle>Product listings</PageTitle>
 <HeadContent>
     <meta name="description" content="Product listing page" />
@@ -34,12 +36,14 @@
     protected override async Task OnInitializedAsync()
     {
         HttpClient httpClient = new HttpClient();
-        Products = await httpClient.GetFromJsonAsync<List<ProductModel>>(@"https://localhost:7163/api/v3/Board/GetBoard");
+        //Products = await httpClient.GetFromJsonAsync<List<ProductModel>>(@"https:localhost:7163/api/v3/Board/GetBoard");
 
-        if (Products == null)
-        {
-            Products = productService.GetAll();
-        }
+        //if (Products == null)
+        //{
+        //    Products = productService.GetAll();
+        //}
+        await storageService.initialize(httpClient);
+        Products = storageService.Products;
         await base.OnInitializedAsync();
     }
 }

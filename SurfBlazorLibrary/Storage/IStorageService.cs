@@ -18,5 +18,6 @@ namespace SurfBlazorLibrary.Storage
         /// </summary>
         ShoppingCartModel ShoppingCart { get; }
 
-    }
+	    Task initialize(HttpClient client);
+	}
 }

@@ -31,7 +31,6 @@ namespace SurfBlazorLibrary.Storage
             Products = new List<ProductModel>();
             ShoppingCart = new ShoppingCartModel();
 
-            //var result = _httpClient.GetFromJsonAsync<ProductModel>(@"https://localhost:7163/api/v3/Board/GetBoard");
             // Store a list of all the products for the online shop.
             //AddProduct(new ProductModel("TEST", "dsfg", 4, 4, 4, 4, "Funboard", "", 500, ""));
             //AddProduct(new ProductModel("BUBBLES-GUMBALL-APRON", "A Gumball for Your Thoughts Apron", 24, "bubbles-gumball-apron-black.jpg"));
@@ -42,6 +41,13 @@ namespace SurfBlazorLibrary.Storage
             //AddProduct(new ProductModel("DOLORES-COMPUTE-MUG", "I Compute, Therefore I Am Mug", 16, "dolores-compute-mug-black.jpg"));
             //AddProduct(new ProductModel("DOLORES-COMPUTE-TSHIRT", "I Compute, Therefore I Am T-shirt", 26, "dolores-compute-tshirt-black.jpg"));
             //AddProduct(new ProductModel("REX-MICROCONTROLLERS-TSHIRT", "Great Microcontrollers Think Alike T-shirt", 26, "rex-microcontrollers-tshirt-black.jpg"));
+        }
+
+        public async Task initialize(HttpClient httpClient)
+        {
+            Products = await httpClient.GetFromJsonAsync<List<ProductModel>>(@"https://localhost:7163/api/v3/Board/GetBoard");
+            //split into get async, and later readfromjson
+            //check for response codes
         }
 
         /// <summary>
