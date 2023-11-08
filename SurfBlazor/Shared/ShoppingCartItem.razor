@@ -11,13 +11,19 @@
         <td class="@@mq-upto-768--display:block @@mq-upto-768--padding-left:cart-image @@mq-upto-768--padding-right:0 @@mq-upto-768--padding-vertical:0 padding:16"><span class="font-weight:500 @@mq-upto-768--margin-left:20 display:block @@mq-upto-768--margin-bottom:12 font-size:24">@Item.Quantity</span></td>
         <td class="@@mq-upto-768--display:block @@mq-upto-768--padding-left:cart-image @@mq-upto-768--padding-right:0 @@mq-upto-768--padding-vertical:0 padding:16"><span class="font-weight:500 @@mq-upto-768--margin-left:20 display:block @@mq-upto-768--margin-bottom:12 font-size:24 @@mq-upto-768--visually-hidden">$@Item.TotalPrice.ToString("0.00")</span></td>
         <td class="@@mq-upto-768--display:block @@mq-upto-768--padding-left:cart-image @@mq-upto-768--padding-right:0 @@mq-upto-768--padding-vertical:0 padding:16 text-align:right">
-            <button type="button" @onclick="DeleteCartItem" aria-label="Remove @Item.Product.Name from your cart" class="display:inline-block @@mq-upto-768--margin-left:20 @@mq-upto-768--margin-top:-2 @@mq-upto-768--pos-left:136px @@mq-upto-768--pos-top:-30px group position:relative">Delete</button>
+            <ConfirmDialog @ref="dialog" />
+
+            <Button Color="ButtonColor.Danger" @onclick="ShowConfirmationAsync"> Remove from cart </Button>
+            @*<button type="button" @onclick="DeleteCartItem" aria-label="Remove @Item.Product.Name from your cart" class="display:inline-block @@mq-upto-768--margin-left:20 @@mq-upto-768--margin-top:-2 @@mq-upto-768--pos-left:136px @@mq-upto-768--pos-top:-30px group position:relative">Delete</button>*@
         </td>
     </tr>    
 }
 @code {
     [Parameter]
     public ShoppingCartItemModel? Item { get; set; }
+
+    private ConfirmDialog dialog = default!;
+
 }
 @functions {
     public void DeleteCartItem()
@@ -26,6 +32,22 @@
         {
             shoppingCartService.DeleteProduct(Item);
             Item = null;
+        }
+    }
+    private async Task ShowConfirmationAsync()
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to delete this?",
+            message1: "This will delete the record. Once deleted can not be rolled back.",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            DeleteCartItem();
+        }
+        else
+        {
+            // do something
         }
     }
 }

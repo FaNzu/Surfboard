@@ -29,7 +29,7 @@ namespace SurfBlazorLibrary.Product
         /// </summary>
         /// <param name="sku">The unique sku reference.</param>
         /// <returns>A <see cref="ProductModel"/> type.</returns>
-        public ProductModel? Get(string sku)
+        public ProductModel Get(string sku)
         {
             return _storageService.Products.FirstOrDefault(p => p.Sku == sku);
         }

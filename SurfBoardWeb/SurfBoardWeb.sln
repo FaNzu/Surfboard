@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBoardWeb", "SurfBoardWe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfboardApi", "..\SurfboardProxyApi\SurfboardApi.csproj", "{54BFDCDE-0E0E-4B59-B58A-5E462D60BB9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfBlazorLibrary", "..\SurfBlazorLibrary\SurfBlazorLibrary.csproj", "{3158A25D-7FA3-4531-906B-FE3BC12D8A73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBlazorLibrary", "..\SurfBlazorLibrary\SurfBlazorLibrary.csproj", "{3158A25D-7FA3-4531-906B-FE3BC12D8A73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfBlazor", "..\SurfBlazor\SurfBlazor.csproj", "{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBlazor", "..\SurfBlazor\SurfBlazor.csproj", "{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

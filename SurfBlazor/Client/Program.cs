@@ -1,3 +1,4 @@
+using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SurfBlazor;
@@ -20,8 +21,8 @@ namespace SurfBlazor
             builder.Services.AddSingleton<IStorageService, StorageService>();
             builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
             builder.Services.AddTransient<IProductService, ProductService>();
-
-            await builder.Build().RunAsync();
+            builder.Services.AddBlazorBootstrap();
+			await builder.Build().RunAsync();
         }
     }
 }

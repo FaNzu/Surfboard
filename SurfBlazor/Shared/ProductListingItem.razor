@@ -1,5 +1,6 @@
 ﻿@using SurfBlazorLibrary.Product.Models;
 @using SurfBlazorLibrary.ShoppingCart;
+@* Use Confirm dialogs, monitor the console for when and how the code continues *@
 @inject IShoppingCartService shoppingCartService
 @implements IProductAddToCart
 @if (Product != null)
@@ -14,7 +15,13 @@
                 <p class="line-height:1.166 font-size:24">$@Product.Price.ToString("0.00")</p>
             </a>
             <input type="text" placeholder="Quantity" name="Qty" @bind="Quantity" @bind:event="oninput" class="padding:12 &:hocus--border-color:neutral-000000 appearance:none background-color:neutral-ffffff border-color:neutral-4c5b5c border-radius:0 border-style:solid border-width:1 color:neutral-483e40 min-height:form-input width:100" />
-            <button @onclick="AddToCart" class="display:inline-block padding-horizontal:24 padding-horizontal:24 &amp;:hocus--background-color:yellow-f0c808 background-color:orange-ff583d color:neutral-222224 font-size:18 font-weight:700 line-height:1 margin-bottom:32 padding-vertical:12 padding-vertical:16">
+            <ConfirmDialog @ref="dialog" />
+
+            <Button Color="ButtonColor.Primary" @onclick="ShowConfirmationAsync"> Buy Item </Button>
+            @*change buy item to, some logic that mimicks the previous text*@
+            
+            
+            @*<button @onclick="AddToCart" class="display:inline-block padding-horizontal:24 padding-horizontal:24 &amp;:hocus--background-color:yellow-f0c808 background-color:orange-ff583d color:neutral-222224 font-size:18 font-weight:700 line-height:1 margin-bottom:32 padding-vertical:12 padding-vertical:16">
                 @if (shoppingCartService.HasProduct(Product.Sku))
                 {
                     <span>Added to cart. 
@@ -28,7 +35,10 @@
                         Add @Quantity to Cart?
                     </span>
                 }
-            </button>
+            </button>*@
+
+
+
         </div>
     </li>
 }
@@ -37,6 +47,8 @@
     public ProductModel? Product { get; set; }
 
     public int? Quantity { get; set; }
+
+    private ConfirmDialog dialog = default!;
 }
 @functions {
     public void AddToCart()
@@ -45,6 +57,23 @@
         {
             shoppingCartService.AddProduct(Product, Quantity ?? 1);
             Quantity = null;
+        }
+    }
+
+    private async Task ShowConfirmationAsync()
+    {
+        var confirmation = await dialog.ShowAsync(
+            title: "Are you sure you want to buy this?",
+            message1: "This will put the item in the shopping cart",
+            message2: "Do you want to proceed?");
+
+        if (confirmation)
+        {
+            AddToCart();
+        }
+        else
+        {
+            // do something
         }
     }
 }

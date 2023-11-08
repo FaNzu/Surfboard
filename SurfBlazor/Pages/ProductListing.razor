@@ -36,12 +36,6 @@
     protected override async Task OnInitializedAsync()
     {
         HttpClient httpClient = new HttpClient();
-        //Products = await httpClient.GetFromJsonAsync<List<ProductModel>>(@"https:localhost:7163/api/v3/Board/GetBoard");
-
-        //if (Products == null)
-        //{
-        //    Products = productService.GetAll();
-        //}
         await storageService.initialize(httpClient);
         Products = storageService.Products;
         await base.OnInitializedAsync();
