@@ -21,6 +21,8 @@ namespace SurfBlazor
             builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
             builder.Services.AddTransient<IProductService, ProductService>();
 
+            builder.Services.AddBlazorBootstrap();
+
             await builder.Build().RunAsync();
         }
     }
