@@ -52,6 +52,15 @@ namespace SurfBlazorLibrary.Product
         {
             return _storageService.Products.ToList();
         }
+        
+        public int GetTotalPageCount()
+        {
+            int test = _storageService.Products.Count / 4;
+            return test;
+            //return int.Parse(Math.Round(test));
+        }
+
+
     }
-    
+
 }

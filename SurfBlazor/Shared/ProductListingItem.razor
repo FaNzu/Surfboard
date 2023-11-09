@@ -1,6 +1,7 @@
 ﻿@using SurfBlazorLibrary.Product.Models;
 @using SurfBlazorLibrary.ShoppingCart;
 @inject IShoppingCartService shoppingCartService
+@inject NavigationManager navigationManager
 @implements IProductAddToCart
 @if (Product != null)
 {
@@ -45,6 +46,8 @@
         {
             shoppingCartService.AddProduct(Product, Quantity ?? 1);
             Quantity = null;
+
+            navigationManager.NavigateTo("/Cart");
         }
     }
 }

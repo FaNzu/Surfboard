@@ -26,5 +26,7 @@ namespace SurfBlazorLibrary.Product
         /// </summary>
         /// <returns>A <see cref="IList<ProductModel>"/> type.</returns>
         IList<ProductModel> GetAll();
+
+        int GetTotalPageCount();
     }
 }
