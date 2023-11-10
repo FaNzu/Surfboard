@@ -44,6 +44,12 @@ namespace SurfboardApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors(Options =>
+            {
+                Options.AllowAnyOrigin();
+                Options.AllowAnyMethod();
+                Options.AllowAnyHeader();
+            });
 
             app.UseHttpsRedirection();
 
