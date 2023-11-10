@@ -1,6 +1,7 @@
 ﻿using SurfBlazorLibrary;
 using SurfBlazorLibrary.Product.Models;
 using SurfBlazorLibrary.Storage;
+using System.IO.Pipes;
 
 namespace SurfBlazorLibrary.Product
 {
@@ -48,16 +49,24 @@ namespace SurfBlazorLibrary.Product
         /// Gets all products
         /// </summary>
         /// <returns>A <see cref="IList<ProductModel>"/> type.</returns>
+        public IList<ProductModel> GetAll(int size, int page = 1)
+        {
+            var skip = size * (page - 1);
+
+            return _storageService.Products.Skip(skip).Take(size).ToList();
+        }
+
         public IList<ProductModel> GetAll()
         {
             return _storageService.Products.ToList();
         }
-        
-        public int GetTotalPageCount()
+
+
+        public int GetTotalPageCount(int size)
         {
-            int test = _storageService.Products.Count / 4;
-            return test;
-            //return int.Parse(Math.Round(test));
+            var productCount = _storageService.Products.Count();
+
+            return productCount > 0 ? (int)Math.Ceiling((decimal)productCount / size) : 1;
         }
 
 

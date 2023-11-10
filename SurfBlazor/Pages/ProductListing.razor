@@ -25,16 +25,16 @@
                         {
                             <ProductListingItem Product="product"></ProductListingItem>
                         }
-                    </ul>               
+                    </ul>
                 </div>
             </div>
         </div>
         <div>
+
             <Pagination ActivePageNumber="@currentPageNumber"
                     TotalPages="TotalPageCount"
                     PageChanged="OnPageChangedAsync" />
 
-            <text>Current Page Number: @currentPageNumber</text>
         </div>
     </main>
 }
@@ -71,8 +71,8 @@
 
     protected override void OnParametersSet()
     {
-        Products = productService.GetAll();
-        TotalPageCount = productService.GetTotalPageCount();
+        Products = productService.GetAll(4, Page ?? 1);
+        TotalPageCount = productService.GetTotalPageCount(4);
         base.OnParametersSet();
     }
 }
