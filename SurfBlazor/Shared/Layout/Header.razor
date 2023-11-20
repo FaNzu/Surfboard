@@ -1,4 +1,5 @@
 ﻿@using SurfBlazorLibrary.ShoppingCart;
+@using SurfBlazorLibrary.ShoppingCart.Models;
 @inject IShoppingCartService shoppingCartService
 <div id="vue-header" class="quenched">
     <header class="border-bottom-color:neutral-000000 border-bottom-style:solid border-bottom-width:1 display:block padding-vertical:8">
@@ -20,9 +21,32 @@
                     ">
                 <use xlink:href="#cart"></use></svg>
                 </NavLink>
+                <span class="cart-count">
+                        @if (shoppingCartCountModel != null)
+                        {
+                            @shoppingCartCountModel.Count
+                        }
+                    </span>
 
                 </div>
            </div>
        </div>
    </header>
 </div>
+@code{
+    [CascadingParameter(Name ="shoppingCartCountModel")]
+    private ShoppingCartCountModel? shoppingCartCountModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if(shoppingCartCountModel != null)
+        {
+            shoppingCartCountModel.CountChange += () =>
+            {
+                shoppingCartCountModel.Count = shoppingCartService.Count();
+                StateHasChanged();
+            };
+        }
+        base.OnInitialized();
+    }
+}

@@ -24,6 +24,8 @@
 
     private ConfirmDialog dialog = default!;
 
+    [CascadingParameter(Name ="shoppingCartCountModel")]
+    private ShoppingCartCountModel? shoppingCartCountModel { get; set; }
 }
 @functions {
     public void DeleteCartItem()
@@ -32,6 +34,17 @@
         {
             shoppingCartService.DeleteProduct(Item);
             Item = null;
+
+            if (Item != null)
+            {
+                shoppingCartService.DeleteProduct(Item);
+                Item = null;
+
+                if (shoppingCartCountModel != null)
+                {
+                    shoppingCartCountModel.OnCountChange();
+                }
+            }
         }
     }
     private async Task ShowConfirmationAsync()
