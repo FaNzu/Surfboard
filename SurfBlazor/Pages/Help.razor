@@ -34,7 +34,7 @@
         Messages = new List<LiveChatMessage>();
 
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(navigationManager.ToAbsoluteUri("/live-chat"))
+            .WithUrl(navigationManager.ToAbsoluteUri("https://localhost:7163/live-chat"))
             .Build();
 
         hubConnection.On<string>("ReceiveMessage", (message) =>
