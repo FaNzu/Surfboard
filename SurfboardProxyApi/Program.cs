@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SurfboardApi.Data;
+using SurfboardApi.Hubs;
 
 namespace SurfboardApi
 {
@@ -36,8 +38,17 @@ namespace SurfboardApi
                 Options.SubstituteApiVersionInUrl = true;
             });
 
+            builder.Services.AddSignalR();
+            builder.Services.AddResponseCompression(opts =>
+                {
+                    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                        new[] { "application/octet-stream" }
+                        );
+                });
+
             var app = builder.Build();
 
+            app.UseResponseCompression();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -57,7 +68,8 @@ namespace SurfboardApi
 
 
             app.MapControllers();
-
+            app.MapHub<LiveChatHub>("/live-chat");
+            app.MapFallbackToFile("index.html");
             app.Run();
         }
     }
