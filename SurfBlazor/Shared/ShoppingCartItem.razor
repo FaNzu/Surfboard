@@ -14,9 +14,8 @@
             <ConfirmDialog @ref="dialog" />
 
             <Button Color="ButtonColor.Danger" @onclick="ShowConfirmationAsync"> Remove from cart </Button>
-            @*<button type="button" @onclick="DeleteCartItem" aria-label="Remove @Item.Product.Name from your cart" class="display:inline-block @@mq-upto-768--margin-left:20 @@mq-upto-768--margin-top:-2 @@mq-upto-768--pos-left:136px @@mq-upto-768--pos-top:-30px group position:relative">Delete</button>*@
         </td>
-    </tr>    
+    </tr>
 }
 @code {
     [Parameter]
@@ -44,10 +43,6 @@
         if (confirmation)
         {
             DeleteCartItem();
-        }
-        else
-        {
-            // do something
         }
     }
 }
