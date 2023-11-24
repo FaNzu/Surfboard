@@ -16,8 +16,8 @@
         </ul>
     }
     <form>
-        <InputText @bind-Value="Message" />
-        <button type="button">Send message</button>
+        <input @bind-value="Message" />
+        <button class="btn-success" type="button" @onclick="SendMessageAsync">Send message</button>
     </form>
 </section>
 
@@ -46,6 +46,18 @@
         await hubConnection.StartAsync();
 
         await base.OnInitializedAsync();
+    }
+
+    private async Task SendMessageAsync()
+    {
+        if (hubConnection != null && hubConnection.State == HubConnectionState.Connected)
+        {
+            await hubConnection.SendAsync("SendMessageAsync", Message);
+            Messages.Add(new LiveChatMessage(Message, LiveChatTypeEnum.SENT));
+
+            Message = string.Empty;
+
+        }
     }
 
     public async ValueTask DisposeAsync()
