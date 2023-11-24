@@ -6,17 +6,23 @@ namespace SurfboardApi.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "Welcome. Please enter your message");
+            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "Velkommen! Hvad kan vi hjælpe med?");
 
 
         }
         public async Task SendMessageAsync(string message)
         {
             await Task.Delay(new TimeSpan(0, 0, 3));
-            if (message.Contains("delivery", StringComparison.OrdinalIgnoreCase))
+            if (message.Contains("fragt tid", StringComparison.OrdinalIgnoreCase))
             {
                 await Clients.Client(Context.ConnectionId)
-                    .SendAsync("ReceiveMessage", "Deleveris will happen SoonTM");
+                    .SendAsync("ReceiveMessage", "Fragt manden kommer når han kommer");
+
+            }
+            if (message.Contains("fragt pris", StringComparison.OrdinalIgnoreCase))
+            {
+                await Clients.Client(Context.ConnectionId)
+                    .SendAsync("ReceiveMessage", "Frag prisen er 100 kr.");
 
             }
         }
