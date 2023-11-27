@@ -1,6 +1,5 @@
 ﻿@using SurfBlazorLibrary.Product.Models;
 @using SurfBlazorLibrary.ShoppingCart;
-@* Use Confirm dialogs, monitor the console for when and how the code continues *@
 @inject IShoppingCartService shoppingCartService
 @inject NavigationManager navigationManager
 @implements IProductAddToCart
@@ -19,27 +18,6 @@
             <ConfirmDialog @ref="dialog" />
 
             <Button Color="ButtonColor.Primary" @onclick="ShowConfirmationAsync"> Buy Item </Button>
-            @*change buy item to, some logic that mimicks the previous text*@
-            
-            
-            @*<button @onclick="AddToCart" class="display:inline-block padding-horizontal:24 padding-horizontal:24 &amp;:hocus--background-color:yellow-f0c808 background-color:orange-ff583d color:neutral-222224 font-size:18 font-weight:700 line-height:1 margin-bottom:32 padding-vertical:12 padding-vertical:16">
-                @if (shoppingCartService.HasProduct(Product.Sku))
-                {
-                    <span>Added to cart. 
-                        @if (Quantity.HasValue) {
-                            <text>Add @Quantity more?</text>
-                        }
-                    </span>
-                }
-                else {
-                    <span>
-                        Add @Quantity to Cart?
-                    </span>
-                }
-            </button>*@
-
-
-
         </div>
     </li>
 }
@@ -73,10 +51,6 @@
         if (confirmation)
         {
             AddToCart();
-        }
-        else
-        {
-            // do something
         }
     }
 }

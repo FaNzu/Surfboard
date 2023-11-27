@@ -26,14 +26,14 @@
                             <ProductListingItem Product="product"></ProductListingItem>
                         }
                     </ul>
-                        
-                    <ul>
-                            <Pagination ActivePageNumber="@currentPageNumber"
-                                TotalPages="TotalPageCount"
-                                Alignment="Alignment.Center"
-                                PageChanged="OnPageChangedAsync" />
+
+                    <ul >
+                        <Pagination ActivePageNumber="@currentPageNumber"
+                                    TotalPages="TotalPageCount"
+                                    Alignment="Alignment.Center"
+                                    PageChanged="OnPageChangedAsync" class="margin-top:25" />
                     </ul>
-                        
+
                 </div>
             </div>
         </div>
@@ -51,13 +51,10 @@
     int currentPageNumber = 1;
 
     private async Task OnPageChangedAsync(int newPageNumber)
-{
-    currentPageNumber = newPageNumber;
-    Products = productService.GetAll(4, newPageNumber); // Opdater produkter baseret på den nye side
-    //TotalPageCount = productService.GetTotalPageCount(4); // Opdater det samlede antal sider
-}
-
-
+    {
+        currentPageNumber = newPageNumber;
+        Products = productService.GetAll(4, newPageNumber);
+    }
 }
 @functions {
     protected override async Task OnInitializedAsync()
