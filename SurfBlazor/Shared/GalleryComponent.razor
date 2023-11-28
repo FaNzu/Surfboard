@@ -1,30 +1,39 @@
 ﻿@using SurfBlazorLibrary.Product
 @using SurfBlazorLibrary.Product.Models
 
-	<h1>Galleri</h1>
+<h1>Galleri</h1>
 
-	@if (imageSource is not null)
-	{
-		<p>
-			<img src="@imageSource" height="300" />
-		</p>
-	}
+<button @onclick="() => BackImage()">
+	Former image
+</button>
 
-	<button @onclick="() => NextImage()">
-		Next image
-	</button>
+@if (imageSource is not null)
+{
+	<p>
+		<img src="@imageSource" height="300" />
+	</p>
+}
 
-	<button @onclick="() => BackImage()">
-		Former image
-	</button>
+<button @onclick="() => NextImage()">
+	Next image
+</button>
 
 @code {
 	[Parameter]
 	public ProductModel? Product { get; set; }
 	private int imageId = 1;
-	private string? imageSource = $"images/The Minilog1.png";
+	private string? imageSource;
+
+	protected override void OnInitialized()
+	{
+		// Check if Product is not null and has a valid Name before setting imageSource
+		if (Product != null && !string.IsNullOrEmpty(Product.Name))
+		{
+			imageSource = $"images/{Product.Name}1.png";
+		}
+	}
 }
-	
+
 @functions {
 	private void NextImage()
 	{
