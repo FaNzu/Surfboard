@@ -1,0 +1,42 @@
+﻿@using SurfBlazorLibrary.Product
+@using SurfBlazorLibrary.Product.Models
+
+	<h1>Galleri</h1>
+
+	@if (imageSource is not null)
+	{
+		<p>
+			<img src="@imageSource" height="300" />
+		</p>
+	}
+
+	<button @onclick="() => NextImage()">
+		Next image
+	</button>
+
+	<button @onclick="() => BackImage()">
+		Former image
+	</button>
+
+@code {
+	[Parameter]
+	public ProductModel? Product { get; set; }
+	private int imageId = 1;
+	private string? imageSource = $"images/The Minilog1.png";
+}
+	
+@functions {
+	private void NextImage()
+	{
+		if (imageId == 4) imageId = 1;
+		else imageId++;
+		imageSource = $"images/{Product.Name}{imageId}.png";
+	}
+
+	private void BackImage()
+	{
+		if (imageId == 1) imageId = 4;
+		else imageId--;
+		imageSource = $"images/{Product.Name}{imageId}.png";
+	}
+}
