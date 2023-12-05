@@ -20,8 +20,11 @@ namespace SurfboardApi.Controllers.v1
         private HttpClient _httpClient;
         private readonly SurfBoardApiContext _context;
 
-
-        public BookingController(IConfiguration config, ILogger<BookingController> logger, HttpClient httpClient, SurfBoardApiContext context)
+		public BookingController(SurfBoardApiContext context)
+		{
+            _context = context;
+		}
+		public BookingController(IConfiguration config, ILogger<BookingController> logger, HttpClient httpClient, SurfBoardApiContext context)
         {
             _config = config;
             _logger = logger;

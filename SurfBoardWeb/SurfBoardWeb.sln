@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBlazorLibrary", "..\Sur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBlazor", "..\SurfBlazor\SurfBlazor.csproj", "{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APITest", "..\APITest\APITest.csproj", "{D26DE39D-9A8B-4084-811B-4E7517AA7141}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC26D6F6-A604-43B6-8A3A-10ECF2E8F7C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D26DE39D-9A8B-4084-811B-4E7517AA7141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D26DE39D-9A8B-4084-811B-4E7517AA7141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D26DE39D-9A8B-4084-811B-4E7517AA7141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D26DE39D-9A8B-4084-811B-4E7517AA7141}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
