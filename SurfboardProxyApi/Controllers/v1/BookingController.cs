@@ -20,10 +20,6 @@ namespace SurfboardApi.Controllers.v1
         private HttpClient _httpClient;
         private readonly SurfBoardApiContext _context;
 
-		public BookingController(SurfBoardApiContext context)
-		{
-            _context = context;
-		}
 		public BookingController(IConfiguration config, ILogger<BookingController> logger, HttpClient httpClient, SurfBoardApiContext context)
         {
             _config = config;
@@ -60,12 +56,7 @@ namespace SurfboardApi.Controllers.v1
                     {
                         return BadRequest("You have reached you maximum amout of bookings");
                     }
-                    //check om userid har bookings aktive
-                    //return fejl
-
-                    //ellers fotsæt
                 }
-
 				try
 				{
                     Bookings booking = new Bookings(bookings.StartDate, bookings.EndDate,bookings.UserId, bookings.BoardId);
